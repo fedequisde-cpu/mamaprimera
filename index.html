@@ -15,51 +15,12 @@
 
 <!-- PWA: iOS Safari -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MamáPrimera">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%234A7252'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='110'%3E🌿%3C/text%3E%3C/svg%3E">
 
-<!-- PWA: Manifest inline via JS (no server needed) -->
-<script>
-(function(){
-  const manifest = {
-    name: "MamáPrimera",
-    short_name: "MamáPrimera",
-    description: "Tu compañera de embarazo. Semana a semana, nutrición, parto y más.",
-    start_url: "./",
-    display: "standalone",
-    background_color: "#F8F4EE",
-    theme_color: "#4A7252",
-    orientation: "portrait-primary",
-    lang: "es",
-    icons: [
-      {
-        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%234A7252'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='110'%3E🌿%3C/text%3E%3C/svg%3E",
-        sizes: "192x192",
-        type: "image/svg+xml",
-        purpose: "any maskable"
-      },
-      {
-        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234A7252'/%3E%3Ctext x='256' y='340' text-anchor='middle' font-size='300'%3E🌿%3C/text%3E%3C/svg%3E",
-        sizes: "512x512",
-        type: "image/svg+xml",
-        purpose: "any maskable"
-      }
-    ],
-    categories: ["health", "lifestyle"],
-    shortcuts: [
-      { name: "Semana a semana", url: "./?page=semanas", description: "Ver desarrollo del bebé" },
-      { name: "Luna — Dudas", url: "./?page=chat", description: "Consultar dudas" },
-      { name: "Historias", url: "./?page=testimonios", description: "Leer experiencias" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('link');
-  link.rel = 'manifest'; link.href = url;
-  document.head.appendChild(link);
-})();
-</script>
+<!-- PWA: Manifest externo -->
+<link rel="manifest" href="/manifest.json">
 <style>
 /* ── FUENTES DEL SISTEMA — SIN LLAMADAS EXTERNAS ── */
 @font-face {
@@ -2469,10 +2430,11 @@ window.addEventListener('DOMContentLoaded',()=>{
 </div>
 
 <script>
-// ══ Service Worker: solo funciona con HTTPS (Vercel/GitHub Pages) ══
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  // El SW se registrará cuando la app esté publicada en un servidor con HTTPS
-  console.log('MamáPrimera: HTTPS detectado, SW disponible cuando se publique con sw.js');
+// ══ Service Worker real ══
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log('MamáPrimera: SW registrado ✓'))
+    .catch(e => console.log('SW error:', e));
 }
 
 // ══ Una vez instalada, confirmar con toast ══
