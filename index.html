@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; frame-src 'none';">
+<meta name="referrer" content="no-referrer">
+<title>MamáPrimera — Tu compañera de embarazo</title>
+
+<!-- PWA: Instalable como app -->
+<meta name="application-name" content="MamáPrimera">
+<meta name="description" content="Tu compañera de embarazo. Semana a semana, nutrición, parto y más.">
+<meta name="theme-color" content="#4A7252">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- PWA: iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MamáPrimera">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%234A7252'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='110'%3E🌿%3C/text%3E%3C/svg%3E">
+
+<!-- PWA: Manifest inline via JS (no server needed) -->
+<script>
+(function(){
+  const manifest = {
+    name: "MamáPrimera",
+    short_name: "MamáPrimera",
+    description: "Tu compañera de embarazo. Semana a semana, nutrición, parto y más.",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#F8F4EE",
+    theme_color: "#4A7252",
+    orientation: "portrait-primary",
+    lang: "es",
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%234A7252'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='110'%3E🌿%3C/text%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      },
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234A7252'/%3E%3Ctext x='256' y='340' text-anchor='middle' font-size='300'%3E🌿%3C/text%3E%3C/svg%3E",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ],
+    categories: ["health", "lifestyle"],
+    shortcuts: [
+      { name: "Semana a semana", url: "./?page=semanas", description: "Ver desarrollo del bebé" },
+      { name: "Luna — Dudas", url: "./?page=chat", description: "Consultar dudas" },
+      { name: "Historias", url: "./?page=testimonios", description: "Leer experiencias" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest'; link.href = url;
+  document.head.appendChild(link);
+})();
+</script>
+<style>
+/* ── FUENTES DEL SISTEMA — SIN LLAMADAS EXTERNAS ── */
+@font-face {
+  font-family: 'Display';
+  src: local('Georgia'), local('Times New Roman'), local('serif');
+}
+:root {
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+:root {
+  --cream: #F8F4EE;
+  --cream2: #EFE8DC;
+  --cream3: #E5DBCC;
+  --sage: #7B9E82;
+  --sage-l: #A8C4AE;
+  --sage-d: #4A7252;
+  --rose: #D4897A;
+  --rose-l: #E8B5AB;
+  --rose-d: #A85E50;
+  --warm: #8B6B5A;
+  --dark: #2A1F1A;
+  --mid: #5A4540;
+  --light: #9A8880;
+  --white: #FFFFFF;
+  --shadow: 0 8px 40px rgba(74,114,82,.12);
+  --shadow-s: 0 3px 16px rgba(74,114,82,.09);
+  --radius: 22px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--cream);
+  color:var(--dark);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 5% 15%,rgba(123,158,130,.1) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 95% 85%,rgba(212,137,122,.08) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 50%,rgba(248,244,238,.4) 0%,transparent 80%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(248,244,238,.95);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(123,158,130,.15);
+  display:flex;flex-direction:column;
+}
+.nav-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:50px;
+}
+.logo{
+  font-family:var(--font-display);font-size:1.45rem;font-weight:600;
+  color:var(--sage-d);display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em;
+  flex-shrink:0;
+}
+.logo span{color:var(--rose)}
+.week-badge-nav{
+  display:flex;align-items:center;gap:.4rem;background:rgba(123,158,130,.12);
+  border:1px solid rgba(123,158,130,.25);border-radius:50px;
+  padding:4px 14px;font-size:.78rem;font-weight:600;color:var(--sage-d);cursor:pointer;
+  transition:all .2s;flex-shrink:0;
+}
+.week-badge-nav:hover{background:rgba(123,158,130,.2)}
+.nav-bar{
+  display:flex;gap:.3rem;padding:6px 1.5rem 8px;
+  overflow-x:auto;background:transparent;
+}
+.nav-bar::-webkit-scrollbar{display:none}
+.np{
+  padding:6px 15px;border-radius:50px;border:none;background:rgba(237,232,220,.6);
+  cursor:pointer;font-family:var(--font-body);font-size:.8rem;font-weight:600;
+  color:var(--mid);transition:all .2s;white-space:nowrap;flex-shrink:0;
+}
+.np:hover{background:var(--cream2)}
+.np.active{background:var(--sage-d);color:white;box-shadow:0 2px 10px rgba(74,114,82,.25)}
+
+/* ── APP WRAPPER ── */
+.app{padding-top:96px;position:relative;z-index:1}
+.page{display:none;padding:2rem 2rem 3rem;max-width:960px;margin:0 auto;animation:fadeUp .35s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TYPOGRAPHY ── */
+.ph{font-family:var(--font-display);font-size:2.1rem;font-weight:600;line-height:1.15;color:var(--dark);margin-bottom:.4rem}
+.ph em{color:var(--sage-d);font-style:italic}
+.ps{color:var(--light);font-size:.95rem;font-weight:400;margin-bottom:2rem}
+.tag{display:inline-block;background:rgba(123,158,130,.12);color:var(--sage-d);border-radius:50px;padding:3px 14px;font-size:.75rem;font-weight:600;margin-bottom:.75rem;letter-spacing:.04em;text-transform:uppercase}
+.tag.rose{background:rgba(212,137,122,.12);color:var(--rose-d)}
+
+/* ── CARDS ── */
+.card{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-s);border:1px solid transparent;transition:all .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:rgba(123,158,130,.15)}
+.card h4{font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--dark);margin-bottom:.6rem}
+.card p{font-size:.85rem;color:var(--light);line-height:1.6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.full{grid-column:1/-1}
+ul.dots{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+ul.dots li{font-size:.87rem;color:var(--mid);padding-left:1.1rem;position:relative;line-height:1.6}
+ul.dots li::before{content:'•';position:absolute;left:0;color:var(--sage)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:11px 22px;border-radius:14px;border:none;cursor:pointer;font-family:var(--font-body);font-size:.88rem;font-weight:600;transition:all .2s}
+.btn-sage{background:var(--sage-d);color:var(--white)}
+.btn-sage:hover{background:var(--sage)}
+.btn-rose{background:var(--rose);color:var(--white)}
+.btn-rose:hover{background:var(--rose-d)}
+.btn-outline{background:transparent;border:1.5px solid var(--sage-l);color:var(--sage-d)}
+.btn-outline:hover{background:rgba(123,158,130,.08)}
+.btn-full{width:100%;justify-content:center}
+
+/* ════════════════════════════════════
+   PAGE: INICIO
+════════════════════════════════════ */
+.hero{text-align:center;padding:2.5rem 1rem 2rem}
+.hero-title{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.2rem);font-weight:600;line-height:1.15;margin-bottom:.75rem}
+.hero-title em{color:var(--sage-d);font-style:italic}
+.hero-sub{color:var(--light);font-weight:400;margin-bottom:2rem}
+
+/* FRUIT VISUALIZER */
+.fruit-vis{
+  background:var(--white);border-radius:var(--radius);padding:2rem;
+  box-shadow:var(--shadow);margin-bottom:1.5rem;text-align:center;
+  overflow:hidden;position:relative;
+}
+.fruit-vis::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(123,158,130,.07),transparent 70%);
+  pointer-events:none;
+}
+.fv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.fv-week-ctrl{display:flex;align-items:center;gap:1rem}
+.fv-week-ctrl input[type=range]{
+  -webkit-appearance:none;width:200px;height:5px;
+  border-radius:3px;outline:none;cursor:pointer;
+  background:linear-gradient(to right,var(--sage) 0%,var(--sage) var(--p,20%),var(--cream2) var(--p,20%));
+}
+.fv-week-ctrl input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--sage-d);border:3px solid white;box-shadow:0 2px 8px rgba(74,114,82,.3);cursor:pointer;
+}
+.fv-week-num{font-family:var(--font-display);font-size:2.2rem;font-weight:600;color:var(--sage-d);line-height:1}
+.fv-week-label{font-size:.72rem;color:var(--light);text-transform:uppercase;letter-spacing:.05em}
+
+.fruit-stage{
+  display:flex;align-items:center;justify-content:center;gap:3rem;
+  padding:1rem 0;flex-wrap:wrap;
+}
+.fruit-emoji-wrap{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:.75rem;
+}
+.fruit-emoji{
+  font-size:5rem;filter:drop-shadow(0 8px 16px rgba(0,0,0,.1));
+  animation:fruitBounce 3s ease-in-out infinite;
+  display:block;
+}
+@keyframes fruitBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.fruit-name{font-family:var(--font-display);font-size:1.3rem;font-weight:600;color:var(--dark)}
+.fruit-caption{font-size:.8rem;color:var(--light)}
+
+.baby-stats{display:flex;flex-direction:column;gap:.75rem;text-align:left}
+.bstat{display:flex;align-items:center;gap:.75rem}
+.bstat-icon{width:36px;height:36px;border-radius:10px;background:rgba(123,158,130,.12);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.bstat-info .bstat-label{font-size:.7rem;color:var(--light);text-transform:uppercase;letter-spacing:.04em}
+.bstat-info .bstat-val{font-size:.95rem;font-weight:600;color:var(--dark)}
+
+.tri-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1.5rem}
+.tri-seg{border-radius:12px;padding:.75rem 1rem;text-align:center}
+.tri-seg.done{background:var(--sage-l);color:var(--sage-d)}
+.tri-seg.current{background:var(--sage-d);color:white}
+.tri-seg.pending{background:var(--cream2);color:var(--light)}
+.tri-seg .ts-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;opacity:.8;font-weight:600}
+.tri-seg .ts-weeks{font-size:.82rem;font-weight:600;margin-top:2px}
+
+/* ════════════════════════════════════
+   PAGE: CALCULADORA + CITAS
+════════════════════════════════════ */
+.calc-box{background:var(--white);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow-s);margin-bottom:1.5rem}
+.calc-box h4{font-family:var(--font-display);font-size:1.2rem;font-weight:600;margin-bottom:1.2rem}
+.input-row{display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap}
+.input-group{display:flex;flex-direction:column;gap:.4rem}
+.input-group label{font-size:.78rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.04em}
+.input-group input[type=date]{
+  padding:9px 14px;border-radius:12px;border:1.5px solid var(--cream2);
+  background:var(--cream);font-family:var(--font-body);font-size:.9rem;
+  color:var(--dark);outline:none;transition:border-color .2s;
+}
+.input-group input[type=date]:focus{border-color:var(--sage-l)}
+.calc-result{
+  background:linear-gradient(135deg,rgba(123,158,130,.1),rgba(248,244,238,.5));
+  border:1px solid rgba(123,158,130,.2);border-radius:16px;
+  padding:1.2rem 1.5rem;margin-top:1.2rem;display:none;
+}
+.calc-result.show{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem}
+.cr-item .cr-label{font-size:.72rem;color:var(--light);text-transform:uppercase;letter-spacing:.04em}
+.cr-item .cr-val{font-size:1rem;font-weight:600;color:var(--sage-d);margin-top:2px}
+
+/* APPOINTMENT TIMELINE */
+.apt-timeline{position:relative;padding-left:2rem}
+.apt-timeline::before{content:'';position:absolute;left:.6rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--sage-l),var(--cream2))}
+.apt{position:relative;margin-bottom:1.2rem}
+.apt::before{content:'';position:absolute;left:-1.45rem;top:.4rem;width:12px;height:12px;border-radius:50%;background:var(--sage);border:2px solid white;box-shadow:0 0 0 2px var(--sage-l)}
+.apt.done::before{background:var(--sage-l)}
+.apt.next::before{background:var(--rose);box-shadow:0 0 0 3px rgba(212,137,122,.25)}
+.apt-card{background:var(--white);border-radius:16px;padding:1rem 1.25rem;box-shadow:var(--shadow-s);border-left:3px solid transparent;transition:all .2s}
+.apt.next .apt-card{border-left-color:var(--rose)}
+.apt-card:hover{transform:translateX(3px)}
+.apt-week{font-size:.72rem;font-weight:600;color:var(--sage);text-transform:uppercase;letter-spacing:.05em}
+.apt-title{font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--dark);margin:.15rem 0 .4rem}
+.apt-details{font-size:.8rem;color:var(--mid);line-height:1.6}
+.apt-badge{display:inline-block;background:rgba(212,137,122,.12);color:var(--rose-d);border-radius:50px;padding:2px 10px;font-size:.7rem;font-weight:600;margin-top:.4rem}
+.apt-badge.green{background:rgba(123,158,130,.12);color:var(--sage-d)}
+
+/* ════════════════════════════════════
+   PAGE: SEMANA A SEMANA
+════════════════════════════════════ */
+.week-nav{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:2rem}
+.week-nav-btn{
+  width:36px;height:36px;border-radius:50%;border:1.5px solid var(--cream2);
+  background:var(--white);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;
+  justify-content:center;transition:all .2s;color:var(--mid);
+}
+.week-nav-btn:hover{border-color:var(--sage);background:rgba(123,158,130,.08);color:var(--sage-d)}
+.week-display{font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--sage-d);text-align:center;min-width:8rem}
+
+/* ════════════════════════════════════
+   PAGE: NUTRICIÓN
+════════════════════════════════════ */
+.food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.9rem;margin-bottom:1.5rem}
+.food-card{background:var(--white);border-radius:16px;padding:1.1rem .9rem;text-align:center;box-shadow:var(--shadow-s);transition:transform .2s;border:1.5px solid transparent}
+.food-card:hover{transform:translateY(-2px);border-color:rgba(123,158,130,.2)}
+.food-card .fe{font-size:2rem;display:block;margin-bottom:.4rem}
+.food-card h5{font-size:.82rem;font-weight:600;color:var(--dark);margin-bottom:.2rem}
+.food-card p{font-size:.73rem;color:var(--light);line-height:1.4}
+.avoid-wrap{background:rgba(212,137,122,.07);border:1px solid rgba(212,137,122,.2);border-radius:var(--radius);padding:1.3rem 1.5rem;margin-bottom:1.5rem}
+.avoid-wrap h4{font-family:var(--font-display);color:var(--rose-d);margin-bottom:.75rem;font-size:1.05rem}
+.tags-cloud{display:flex;flex-wrap:wrap;gap:.5rem}
+.food-tag{background:rgba(212,137,122,.1);color:var(--rose-d);border-radius:50px;padding:4px 14px;font-size:.79rem;font-weight:600}
+
+/* ════════════════════════════════════
+   PAGE: BIENESTAR
+════════════════════════════════════ */
+.symptom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.sym-card{background:var(--white);border-radius:16px;padding:.9rem;cursor:pointer;text-align:center;box-shadow:var(--shadow-s);border:2px solid transparent;transition:all .2s}
+.sym-card.on{border-color:var(--sage);background:rgba(123,158,130,.06)}
+.sym-card:hover{transform:translateY(-2px)}
+.sym-card .si{font-size:1.7rem;display:block;margin-bottom:.35rem}
+.sym-card .sn{font-size:.78rem;font-weight:600;color:var(--dark)}
+.mood-strip{display:flex;justify-content:space-around;background:var(--white);border-radius:var(--radius);padding:1.2rem;box-shadow:var(--shadow-s);margin-bottom:1.5rem}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.5rem .75rem;border-radius:12px;border:none;background:transparent;cursor:pointer;transition:all .2s}
+.mood-btn.on,.mood-btn:hover{background:rgba(123,158,130,.1)}
+.mood-btn .me{font-size:1.8rem}
+.mood-btn .ml{font-size:.68rem;color:var(--light);font-family:var(--font-body);font-weight:600}
+.weight-tracker{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-s);margin-bottom:1.5rem}
+.weight-inputs{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.wi-group{display:flex;flex-direction:column;gap:.4rem}
+.wi-group label{font-size:.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.04em}
+.wi-input{padding:8px 13px;border-radius:11px;border:1.5px solid var(--cream2);background:var(--cream);font-family:var(--font-body);font-size:.9rem;color:var(--dark);outline:none;width:120px;transition:border-color .2s}
+.wi-input:focus{border-color:var(--sage-l)}
+.weight-log{max-height:180px;overflow-y:auto}
+.wlog-item{display:flex;justify-content:space-between;align-items:center;padding:.5rem .25rem;border-bottom:1px solid var(--cream2);font-size:.84rem}
+.wlog-item:last-child{border-bottom:none}
+.wlog-date{color:var(--light)}
+.wlog-val{font-weight:600;color:var(--sage-d)}
+
+/* ════════════════════════════════════
+   PAGE: PARTO
+════════════════════════════════════ */
+.checklist-block{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-s);margin-bottom:1.5rem}
+.checklist-block h4{font-family:var(--font-display);font-size:1.15rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.check-row{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--cream2);cursor:pointer;transition:background .15s;border-radius:8px;padding-left:.35rem}
+.check-row:last-child{border-bottom:none}
+.check-row:hover{background:rgba(123,158,130,.04)}
+.chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--sage-l);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.75rem}
+.chk.on{background:var(--sage);border-color:var(--sage);color:white}
+.chk-text{font-size:.86rem;color:var(--mid);line-height:1.5}
+.chk-text.done{text-decoration:line-through;color:var(--light)}
+.alert-box{background:rgba(212,137,122,.07);border:1.5px solid rgba(212,137,122,.25);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem}
+.alert-box h4{font-family:var(--font-display);color:var(--rose-d);margin-bottom:.75rem;font-size:1.15rem}
+
+/* CONTRACTION COUNTER */
+.contraction-tool{background:var(--white);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow);margin-bottom:1.5rem;text-align:center}
+.contraction-tool h4{font-family:var(--font-display);font-size:1.2rem;margin-bottom.5rem}
+.contraction-timer{font-family:var(--font-display);font-size:3rem;font-weight:600;color:var(--sage-d);margin:1rem 0;letter-spacing:-.02em}
+.contraction-info{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem}
+.ci-item{text-align:center}
+.ci-label{font-size:.7rem;color:var(--light);text-transform:uppercase;letter-spacing:.05em}
+.ci-val{font-size:1.2rem;font-weight:600;color:var(--dark)}
+.contractions-log{max-height:180px;overflow-y:auto;border-top:1px solid var(--cream2);padding-top:.75rem;text-align:left;margin-top:1rem}
+.clog-row{display:flex;justify-content:space-between;padding:.4rem .5rem;font-size:.82rem;border-bottom:1px solid var(--cream2)}
+.clog-row:last-child{border-bottom:none}
+.contraction-alert{background:rgba(212,137,122,.1);border:1px solid var(--rose-l);border-radius:12px;padding:.75rem 1rem;margin-top:.75rem;font-size:.85rem;color:var(--rose-d);font-weight:600;display:none}
+
+/* ════════════════════════════════════
+   PAGE: PAREJA
+════════════════════════════════════ */
+.partner-week-selector{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-s);margin-bottom:1.5rem}
+.partner-week-selector h4{font-family:var(--font-display);font-size:1.1rem;margin-bottom:1rem}
+.partner-tip{background:linear-gradient(135deg,rgba(123,158,130,.08),rgba(248,244,238,.3));border:1px solid rgba(123,158,130,.2);border-radius:16px;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.partner-tip .pt-icon{font-size:1.5rem;margin-bottom:.5rem}
+.partner-tip h5{font-family:var(--font-display);font-size:1rem;font-weight:600;margin-bottom:.35rem;color:var(--dark)}
+.partner-tip p{font-size:.85rem;color:var(--mid);line-height:1.6}
+
+/* ════════════════════════════════════
+   PAGE: DIARIO
+════════════════════════════════════ */
+.diary-compose{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-s);margin-bottom:1.5rem}
+.diary-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.diary-week-label{font-family:var(--font-display);font-size:1.5rem;font-weight:600;color:var(--sage-d)}
+.diary-date{font-size:.82rem;color:var(--light)}
+.diary-textarea{width:100%;border:1.5px solid var(--cream2);border-radius:14px;padding:1rem;font-family:var(--font-body);font-size:.88rem;color:var(--dark);background:var(--cream);resize:vertical;min-height:100px;outline:none;transition:border-color .2s;margin-bottom:1rem}
+.diary-textarea:focus{border-color:var(--sage-l)}
+.diary-entries{display:flex;flex-direction:column;gap:1rem}
+.diary-entry{background:var(--white);border-radius:var(--radius);padding:1.25rem 1.5rem;box-shadow:var(--shadow-s);border-left:3px solid var(--sage-l)}
+.de-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.de-week{font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--sage-d)}
+.de-date{font-size:.75rem;color:var(--light)}
+.de-text{font-size:.88rem;color:var(--mid);line-height:1.7}
+.de-fruit{font-size:1.5rem;margin-top:.5rem}
+
+/* ════════════════════════════════════
+   PAGE: GLOSARIO
+════════════════════════════════════ */
+.glosario-search{
+  display:flex;align-items:center;gap:.75rem;background:var(--white);
+  border:1.5px solid var(--cream2);border-radius:14px;padding:10px 16px;
+  margin-bottom:1.5rem;box-shadow:var(--shadow-s);
+}
+.glosario-search input{flex:1;border:none;background:transparent;font-family:var(--font-body);font-size:.9rem;color:var(--dark);outline:none}
+.glosario-search input::placeholder{color:var(--light)}
+.glosario-term{background:var(--white);border-radius:var(--radius);padding:1.1rem 1.4rem;box-shadow:var(--shadow-s);margin-bottom:.75rem;transition:all .2s}
+.glosario-term:hover{transform:translateX(3px)}
+.gt-word{font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--sage-d);margin-bottom:.25rem}
+.gt-def{font-size:.84rem;color:var(--mid);line-height:1.6}
+
+/* ════════════════════════════════════
+   PAGE: POSTPARTO
+════════════════════════════════════ */
+.postparto-nav{display:flex;gap:.5rem;background:var(--cream2);border-radius:50px;padding:4px;margin-bottom:2rem;width:fit-content}
+.ppnav{padding:6px 16px;border-radius:50px;border:none;background:transparent;cursor:pointer;font-family:var(--font-body);font-size:.82rem;font-weight:600;color:var(--mid);transition:all .2s}
+.ppnav.active{background:var(--white);color:var(--sage-d);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+
+/* ════════════════════════════════════
+   CHAT IA
+════════════════════════════════════ */
+.chat-wrap{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);height:530px;display:flex;flex-direction:column}
+.chat-head{background:linear-gradient(135deg,var(--sage-d),var(--sage));padding:1.1rem 1.5rem;display:flex;align-items:center;gap:.9rem}
+.ch-av{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.ch-name{font-family:var(--font-display);font-size:1rem;font-weight:600;color:white}
+.ch-status{font-size:.73rem;color:rgba(255,255,255,.75)}
+.online-dot{width:7px;height:7px;background:#6EE7B7;border-radius:50%;display:inline-block;margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.chat-msgs{flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.9rem;background:var(--cream)}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--sage-l);border-radius:2px}
+.msg{display:flex;gap:.65rem;max-width:82%;animation:msgIn .22s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.u{margin-left:auto;flex-direction:row-reverse}
+.msg-bubble{background:var(--white);border-radius:18px 18px 18px 4px;padding:.7rem 1rem;font-size:.85rem;line-height:1.65;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.msg.u .msg-bubble{background:var(--sage-d);color:white;border-radius:18px 18px 4px 18px}
+.msg-ico{width:30px;height:30px;border-radius:50%;background:var(--sage-l);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.msg.u .msg-ico{background:var(--sage-d);color:white}
+.quickq{display:flex;gap:.5rem;padding:.65rem 1.25rem 0;overflow-x:auto;background:var(--cream)}
+.quickq::-webkit-scrollbar{display:none}
+.qq{white-space:nowrap;background:var(--white);border:1px solid rgba(123,158,130,.3);border-radius:50px;padding:5px 13px;font-size:.75rem;font-weight:600;color:var(--sage-d);cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.qq:hover{background:var(--sage-d);color:white;border-color:var(--sage-d)}
+.chat-input-row{padding:.9rem 1.25rem;background:var(--white);border-top:1px solid var(--cream2);display:flex;gap:.65rem;align-items:flex-end}
+.chat-ta{flex:1;border:1.5px solid var(--cream2);border-radius:13px;padding:9px 13px;font-family:var(--font-body);font-size:.85rem;color:var(--dark);background:var(--cream);resize:none;outline:none;min-height:40px;max-height:90px;transition:border-color .2s}
+.chat-ta:focus{border-color:var(--sage-l)}
+.send-btn{width:40px;height:40px;background:var(--sage-d);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.send-btn:hover{background:var(--sage);transform:scale(1.05)}
+.send-btn svg{color:white}
+.typing-ind{display:flex;gap:3px;padding:10px 14px;background:var(--white);border-radius:18px 18px 18px 4px;width:fit-content;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.td{width:7px;height:7px;background:var(--sage-l);border-radius:50%;animation:tdBounce 1.4s infinite ease-in-out}
+.td:nth-child(2){animation-delay:.2s}
+.td:nth-child(3){animation-delay:.4s}
+@keyframes tdBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+/* ── BIENVENIDA MODAL ── */
+.welcome-overlay{position:fixed;inset:0;z-index:1000;background:rgba(42,31,26,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.welcome-box{background:var(--cream);border-radius:28px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(42,31,26,.3);animation:modalIn .35s ease}
+.welcome-box::-webkit-scrollbar{width:3px}
+.welcome-box::-webkit-scrollbar-thumb{background:var(--sage-l);border-radius:2px}
+.welcome-hero{background:var(--sage-d);border-radius:28px 28px 0 0;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.welcome-hero::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:var(--rose);border-radius:50%;opacity:.2}
+.welcome-body{padding:1.5rem 1.75rem 2rem}
+.wf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1.1rem 0}
+.wf-item{background:var(--white);border-radius:14px;padding:.7rem .85rem;display:flex;align-items:flex-start;gap:.55rem;border:1px solid var(--cream2)}
+.wf-icon{font-size:1.15rem;flex-shrink:0;margin-top:1px}
+.wf-title{font-size:.8rem;font-weight:700;color:var(--dark);display:block;margin-bottom:1px}
+.wf-desc{font-size:.74rem;color:var(--light);line-height:1.35}
+.welcome-step{background:rgba(74,114,82,.07);border:1.5px solid rgba(74,114,82,.18);border-radius:16px;padding:1rem 1.2rem;margin:1.1rem 0}
+.welcome-dl-btn{width:100%;padding:13px;background:var(--sage-d);color:white;border:none;border-radius:14px;font-family:var(--font-body);font-size:.92rem;font-weight:700;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.welcome-dl-btn:hover{background:var(--sage);transform:translateY(-1px)}
+.welcome-enter-btn{width:100%;padding:11px;margin-top:.6rem;background:transparent;color:var(--sage-d);border:2px solid var(--sage-d);border-radius:14px;font-family:var(--font-body);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;display:none}
+.welcome-enter-btn.visible{display:block}
+.welcome-enter-btn:hover{background:rgba(74,114,82,.06)}
+.welcome-note{font-size:.72rem;color:var(--light);text-align:center;margin-top:.7rem;line-height:1.5}
+
+/* ── BOTÓN AYUDA FLOTANTE ── */
+.help-fab{position:fixed;bottom:90px;right:1rem;z-index:300;width:42px;height:42px;background:var(--white);border:2px solid var(--sage-l);border-radius:50%;box-shadow:0 4px 16px rgba(74,114,82,.18);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:var(--sage-d);transition:all .2s;font-family:var(--font-body)}
+.help-fab:hover{background:var(--sage-d);color:white;border-color:var(--sage-d);transform:scale(1.08)}
+
+/* ── PANEL AYUDA ── */
+.help-panel-bg{display:none;position:fixed;inset:0;z-index:600;background:rgba(42,31,26,.5);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0 1rem 1rem}
+.help-panel-bg.open{display:flex}
+.help-panel{background:var(--cream);border-radius:24px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(42,31,26,.2);animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.help-panel::-webkit-scrollbar{width:3px}
+.help-panel::-webkit-scrollbar-thumb{background:var(--sage-l);border-radius:2px}
+.help-header{background:var(--sage-d);border-radius:24px 24px 0 0;padding:1.15rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.help-close{width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:white;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.help-close:hover{background:rgba(255,255,255,.35)}
+.help-body{padding:1.1rem 1.5rem 2rem}
+.faq-item{border-bottom:1px solid var(--cream2)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;text-align:left;background:transparent;border:none;padding:.85rem 0;font-family:var(--font-body);font-size:.86rem;font-weight:700;color:var(--dark);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:.5rem;transition:color .2s}
+.faq-q:hover{color:var(--sage-d)}
+.faq-arrow{font-size:.65rem;color:var(--sage-d);transition:transform .25s;flex-shrink:0}
+.faq-arrow.open{transform:rotate(180deg)}
+.faq-a{display:none;padding:0 0 .85rem;font-size:.82rem;color:var(--mid);line-height:1.65}
+.faq-a.open{display:block}
+.help-dl-row{background:rgba(74,114,82,.07);border:1.5px solid rgba(74,114,82,.18);border-radius:14px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;margin-top:1rem}
+
+.disclaimer{background:rgba(139,107,90,.07);border-left:3px solid var(--rose);border-radius:0 12px 12px 0;padding:.7rem 1rem;font-size:.77rem;color:var(--warm);margin-top:1rem;line-height:1.5}
+
+/* ── MOBILE NAV ── */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(248,244,238,.96);backdrop-filter:blur(14px);border-top:1px solid rgba(123,158,130,.15);padding:7px 1rem 18px;z-index:200;justify-content:space-around}
+.mob-tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 8px;border-radius:10px;border:none;background:transparent;cursor:pointer;font-family:var(--font-body);font-size:.6rem;font-weight:600;color:var(--light);transition:all .2s}
+.mob-tab.active{color:var(--sage-d)}
+.mob-tab .mi{font-size:1.25rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .nav-top{padding:0 1rem;height:46px}
+  .nav-bar{padding:5px 1rem 7px}
+  .week-badge-nav{display:none}
+  .app{padding-top:88px}
+  .page{padding:1.5rem 1rem 2rem}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .mob-nav{display:flex}
+  .app{padding-bottom:80px}
+  .fruit-stage{gap:1.5rem}
+  .fruit-emoji{font-size:3.5rem}
+  .fv-top{flex-direction:column;gap:1rem;text-align:center}
+}
+
+/* ════ TESTIMONIOS ════ */
+.test-filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.test-filter{padding:6px 16px;border-radius:50px;border:1.5px solid var(--cream2);background:var(--white);cursor:pointer;font-family:var(--font-body);font-size:.78rem;font-weight:600;color:var(--mid);transition:all .2s}
+.test-filter.active{background:var(--sage-d);color:white;border-color:var(--sage-d)}
+.test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.test-card{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-s);cursor:pointer;transition:all .25s;border:1.5px solid transparent;display:flex;flex-direction:column;gap:.9rem}
+.test-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:rgba(123,158,130,.2)}
+.test-card-top{display:flex;align-items:center;gap:.75rem}
+.test-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.test-meta .test-name{font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--dark)}
+.test-meta .test-info{font-size:.74rem;color:var(--light);margin-top:1px}
+.test-category{display:inline-block;border-radius:50px;padding:3px 12px;font-size:.7rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.test-quote{font-size:.88rem;color:var(--mid);line-height:1.7;position:relative;padding-left:1rem}
+.test-quote::before{content:'"';position:absolute;left:0;top:-.1rem;font-family:var(--font-display);font-size:1.8rem;color:var(--sage-l);line-height:1}
+.test-quote-short{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.test-read-more{font-size:.78rem;font-weight:700;color:var(--sage-d);margin-top:.25rem;align-self:flex-start}
+.test-modal-bg{display:none;position:fixed;inset:0;background:rgba(42,31,26,.5);z-index:500;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px)}
+.test-modal-bg.open{display:flex}
+.test-modal{background:var(--cream);border-radius:var(--radius);max-width:600px;width:100%;max-height:85vh;overflow-y:auto;padding:2rem;position:relative;animation:modalIn .25s ease}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+@media(max-width:700px){
+  .help-fab{bottom:80px}
+}
+.test-modal::-webkit-scrollbar{width:4px}
+.test-modal::-webkit-scrollbar-thumb{background:var(--sage-l);border-radius:2px}
+.test-modal-close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;border-radius:50%;border:none;background:var(--cream2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:var(--mid);transition:all .2s}
+.test-modal-close:hover{background:var(--sage-d);color:white}
+.test-modal-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding-right:2rem}
+.test-modal-body{font-size:.9rem;color:var(--mid);line-height:1.85}
+.test-modal-body p{margin-bottom:1rem}
+.test-modal-body p:last-child{margin-bottom:0}
+.test-takeaway{background:rgba(123,158,130,.08);border-left:3px solid var(--sage);border-radius:0 12px 12px 0;padding:.85rem 1rem;margin-top:1.25rem;font-size:.83rem;color:var(--sage-d);line-height:1.6}
+.test-takeaway strong{display:block;margin-bottom:.25rem}
+
+.sep{height:1px;background:var(--cream2);margin:1.5rem 0}
+.notice{background:rgba(123,158,130,.07);border:1px solid rgba(123,158,130,.2);border-radius:12px;padding:.75rem 1rem;font-size:.8rem;color:var(--sage-d);margin-bottom:1.5rem;line-height:1.5}
+.success-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--sage-d);color:white;padding:10px 22px;border-radius:50px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow);z-index:999;opacity:0;transition:all .3s;pointer-events:none}
+.success-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══ BIENVENIDA — PRIMERA VEZ ══ -->
+<div class="welcome-overlay" id="welcome-overlay">
+  <div class="welcome-box">
+    <div class="welcome-hero">
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:rgba(200,222,201,.7);text-transform:uppercase;margin-bottom:.5rem">Bienvenida a</div>
+      <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:white;font-style:italic;margin-bottom:.3rem">MamáPrimera</div>
+      <div style="font-size:.88rem;color:rgba(200,222,201,.85);line-height:1.5">Tu compañera de embarazo — gratuita, sin publicidad<br>y sin guardar ningún dato tuyo en ningún servidor.</div>
+    </div>
+    <div class="welcome-body">
+
+      <!-- QUÉ INCLUYE -->
+      <div style="font-size:.78rem;font-weight:700;color:var(--sage-d);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem">¿Qué incluye?</div>
+      <div class="wf-grid">
+        <div class="wf-item"><span class="wf-icon">🌱</span><div><span class="wf-title">Semana a semana</span><span class="wf-desc">Las 42 semanas con desarrollo del bebé</span></div></div>
+        <div class="wf-item"><span class="wf-icon">📋</span><div><span class="wf-title">Citas médicas</span><span class="wf-desc">Protocolo oficial SNS + calculadora</span></div></div>
+        <div class="wf-item"><span class="wf-icon">⏱️</span><div><span class="wf-title">Contracciones</span><span class="wf-desc">Cronómetro con alerta al hospital</span></div></div>
+        <div class="wf-item"><span class="wf-icon">🌿</span><div><span class="wf-title">Luna — Dudas</span><span class="wf-desc">Base de conocimiento médico oficial</span></div></div>
+        <div class="wf-item"><span class="wf-icon">💜</span><div><span class="wf-title">Historias reales</span><span class="wf-desc">Parto, lactancia, emociones y más</span></div></div>
+        <div class="wf-item"><span class="wf-icon">📲</span><div><span class="wf-title">Instalable en móvil</span><span class="wf-desc">Como app, desde el menú del navegador</span></div></div>
+      </div>
+
+      <!-- PRIVACIDAD -->
+      <div style="background:rgba(74,114,82,.07);border:1.5px solid rgba(74,114,82,.15);border-radius:14px;padding:.85rem 1rem;margin-bottom:1.1rem;display:flex;gap:.7rem;align-items:flex-start">
+        <span style="font-size:1.2rem;flex-shrink:0">🔒</span>
+        <div style="font-size:.8rem;color:var(--mid);line-height:1.55"><strong style="color:var(--sage-d);display:block;margin-bottom:2px">Sin datos, sin registro, sin publicidad</strong>Todo lo que escribas queda exclusivamente en tu dispositivo. No enviamos nada a ningún servidor. Nunca.</div>
+      </div>
+
+      <!-- PASO: DESCARGAR PDF -->
+      <div class="welcome-step">
+        <div style="font-size:.78rem;font-weight:700;color:var(--sage-d);margin-bottom:.4rem">📄 Antes de entrar — Carta de presentación</div>
+        <div style="font-size:.8rem;color:var(--mid);line-height:1.55;margin-bottom:.85rem">Te pedimos que descargues nuestra carta de presentación. Explica en detalle todo lo que puedes hacer con la app, cómo protege tu privacidad y cómo instalarla en tu móvil.</div>
+        <button class="welcome-dl-btn" id="welcome-dl-btn" onclick="downloadAndUnlock()">
+          <span>⬇️</span> Descargar carta de presentación (PDF)
+        </button>
+        <button class="welcome-enter-btn" id="welcome-enter-btn" onclick="enterApp()">
+          Entrar a MamáPrimera →
+        </button>
+        <div class="welcome-note" id="welcome-note">Descarga el PDF para desbloquear la app</div>
+      </div>
+
+      <div style="font-size:.7rem;color:var(--light);text-align:center;line-height:1.6">
+        ⚕️ La información de esta app es orientativa y no sustituye la consulta con tu ginecólogo o matrona.<br>
+        Ante cualquier duda clínica, consulta siempre a un profesional sanitario.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOTÓN AYUDA FLOTANTE ══ -->
+<button class="help-fab" id="help-fab" onclick="openHelp()" title="Ayuda y preguntas frecuentes">❓</button>
+
+<!-- ══ PANEL AYUDA ══ -->
+<div class="help-panel-bg" id="help-panel-bg" onclick="closeHelp()">
+  <div class="help-panel" onclick="event.stopPropagation()">
+    <div class="help-header">
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.15rem;font-style:italic;color:white;font-weight:700">Ayuda & Preguntas frecuentes</div>
+        <div style="font-size:.75rem;color:rgba(200,222,201,.8);margin-top:2px">Todo lo que necesitas saber sobre MamáPrimera</div>
+      </div>
+      <button class="help-close" onclick="closeHelp()">✕</button>
+    </div>
+    <div class="help-body">
+
+      <!-- DESCARGAR PDF -->
+      <div class="help-dl-row">
+        <span style="font-size:1.5rem">📄</span>
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:700;color:var(--dark);margin-bottom:2px">Carta de presentación completa</div>
+          <div style="font-size:.75rem;color:var(--light)">Todas las funciones, diferencias y guía de instalación</div>
+        </div>
+        <button onclick="downloadPDF()" style="background:var(--sage-d);color:white;border:none;border-radius:10px;padding:7px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font-body);white-space:nowrap">⬇️ PDF</button>
+      </div>
+
+      <div style="margin-top:1.2rem;margin-bottom:.5rem;font-size:.72rem;font-weight:700;color:var(--sage-d);text-transform:uppercase;letter-spacing:.06em">Preguntas frecuentes</div>
+
+      <div id="faq-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="success-toast" id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-top">
+    <div class="logo">🌿 Mamá<span>Primera</span></div>
+    <div class="week-badge-nav" onclick="go('inicio')">Semana <span id="nav-week">8</span> 🌱</div>
+  </div>
+  <div class="nav-bar">
+    <button class="np active" onclick="go('inicio')">🏠 Inicio</button>
+    <button class="np" onclick="go('citas')">📋 Citas médicas</button>
+    <button class="np" onclick="go('semanas')">🌱 Semana a semana</button>
+    <button class="np" onclick="go('nutricion')">🥗 Nutrición</button>
+    <button class="np" onclick="go('bienestar')">💚 Bienestar</button>
+    <button class="np" onclick="go('parto')">👶 Parto</button>
+    <button class="np" onclick="go('pareja')">💙 Para la pareja</button>
+    <button class="np" onclick="go('diario')">📖 Diario</button>
+    <button class="np" onclick="go('glosario')">📚 Glosario</button>
+    <button class="np" onclick="go('postparto')">🌸 Postparto</button>
+    <button class="np" onclick="go('testimonios')">💜 Historias</button>
+    <button class="np" onclick="go('chat')">🌿 Luna</button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav">
+  <button class="mob-tab active" onclick="go('inicio')"><span class="mi">🏠</span>Inicio</button>
+  <button class="mob-tab" onclick="go('semanas')"><span class="mi">🌱</span>Semanas</button>
+  <button class="mob-tab" onclick="go('parto')"><span class="mi">👶</span>Parto</button>
+  <button class="mob-tab" onclick="go('testimonios')"><span class="mi">💜</span>Historias</button>
+  <button class="mob-tab" onclick="go('chat')"><span class="mi">🌿</span>Luna</button>
+</div>
+
+<div class="app">
+
+<!-- ════════ INICIO ════════ -->
+<div id="page-inicio" class="page active">
+  <div class="hero">
+    <div class="tag">Tu compañera de embarazo</div>
+    <h1 class="hero-title">Hola, <em>mamá primeriza</em> 💛</h1>
+    <p class="hero-sub">Estás haciendo algo increíble. Aquí tienes todo lo que necesitas.</p>
+  </div>
+
+  <!-- FRUIT VISUALIZER -->
+  <div class="fruit-vis">
+    <div class="fv-top">
+      <div>
+        <div class="fv-week-label">Semana de embarazo</div>
+        <div class="fv-week-num" id="fv-num">8</div>
+      </div>
+      <div class="fv-week-ctrl">
+        <span style="font-size:.75rem;color:var(--light)">1</span>
+        <input type="range" min="1" max="42" value="8" id="main-slider" oninput="updateAll(+this.value)">
+        <span style="font-size:.75rem;color:var(--light)">42</span>
+      </div>
+    </div>
+
+    <div class="fruit-stage">
+      <div class="fruit-emoji-wrap">
+        <span class="fruit-emoji" id="fv-emoji">🫐</span>
+        <div class="fruit-name" id="fv-name">Arándano</div>
+        <div class="fruit-caption" id="fv-caption">Semana 8</div>
+      </div>
+      <div class="baby-stats" id="baby-stats"></div>
+    </div>
+
+    <div class="tri-progress" id="tri-prog"></div>
+  </div>
+
+  <!-- QUICK CARDS -->
+  <div class="grid2" style="margin-bottom:1.5rem">
+    <div class="card" onclick="go('citas')" style="cursor:pointer">
+      <div style="font-size:1.8rem;margin-bottom:.75rem">📋</div>
+      <h4>Citas médicas</h4>
+      <p>Protocolo oficial SS. Sabe exactamente qué visita te toca y qué pruebas harán.</p>
+    </div>
+    <div class="card" onclick="go('semanas')" style="cursor:pointer">
+      <div style="font-size:1.8rem;margin-bottom:.75rem">🌱</div>
+      <h4>Semana a semana</h4>
+      <p>Desarrollo de tu bebé, cambios en tu cuerpo y síntomas típicos cada semana.</p>
+    </div>
+    <div class="card" onclick="go('parto')" style="cursor:pointer">
+      <div style="font-size:1.8rem;margin-bottom:.75rem">⏱️</div>
+      <h4>Contador de contracciones</h4>
+      <p>Cronometra tus contracciones y sabe cuándo es hora de ir al hospital.</p>
+    </div>
+    <div class="card" onclick="go('chat')" style="cursor:pointer">
+      <div style="font-size:1.8rem;margin-bottom:.75rem">🌿</div>
+      <h4>Luna — Consulta de dudas</h4>
+      <p>Respuestas basadas en el Ministerio de Sanidad, OMS y SEGO. Sin IA externa, 100% privado.</p>
+    </div>
+    <div class="card" onclick="go('testimonios')" style="cursor:pointer">
+      <div style="font-size:1.8rem;margin-bottom:.75rem">💜</div>
+      <h4>Historias de mamás</h4>
+      <p>Experiencias de parto, lactancia, emociones y más. Para que no te sientas sola.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ CITAS MÉDICAS ════════ -->
+<div id="page-citas" class="page">
+  <span class="tag">📋 Protocolo oficial</span>
+  <h2 class="ph">Calendario de <em>citas médicas</em></h2>
+  <p class="ps">Basado en el protocolo del Ministerio de Sanidad de España (SNS)</p>
+
+  <!-- CALCULADORA FPP -->
+  <div class="calc-box">
+    <h4>🗓️ Calculadora de fecha probable de parto</h4>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Fecha de tu última regla (FUR)</label>
+        <input type="date" id="fur-input" oninput="calcFPP()">
+      </div>
+      <button class="btn btn-sage" onclick="calcFPP()">Calcular</button>
+    </div>
+    <div class="calc-result" id="calc-result">
+      <div class="cr-item"><div class="cr-label">Semana actual</div><div class="cr-val" id="cr-week">—</div></div>
+      <div class="cr-item"><div class="cr-label">Fecha probable de parto</div><div class="cr-val" id="cr-fpp">—</div></div>
+      <div class="cr-item"><div class="cr-label">Trimestre</div><div class="cr-val" id="cr-tri">—</div></div>
+      <div class="cr-item"><div class="cr-label">Días para el parto</div><div class="cr-val" id="cr-days">—</div></div>
+    </div>
+  </div>
+
+  <div class="notice">ℹ️ El protocolo SS contempla <strong>10 visitas</strong> para embarazos de bajo riesgo. Tu matrona de Atención Primaria es tu profesional de referencia principal.</div>
+
+  <div class="apt-timeline" id="apt-timeline"></div>
+</div>
+
+<!-- ════════ SEMANA A SEMANA ════════ -->
+<div id="page-semanas" class="page">
+  <span class="tag">🌱 Desarrollo</span>
+  <h2 class="ph">Semana a <em>semana</em></h2>
+  <p class="ps">Tu bebé y tu cuerpo, con detalle</p>
+  <div class="week-nav">
+    <button class="week-nav-btn" onclick="chWeek(-1)">‹</button>
+    <div class="week-display" id="sw-display">Semana 8</div>
+    <button class="week-nav-btn" onclick="chWeek(+1)">›</button>
+  </div>
+  <div id="sw-content"></div>
+</div>
+
+<!-- ════════ NUTRICIÓN ════════ -->
+<div id="page-nutricion" class="page">
+  <span class="tag">🥗 Nutrición</span>
+  <h2 class="ph">Alimentación <em>durante el embarazo</em></h2>
+  <p class="ps">Qué comer, qué evitar y cómo cubrir tus necesidades nutricionales</p>
+
+  <div class="card" style="margin-bottom:1.5rem">
+    <h4>✨ Alimentos estrella del embarazo</h4>
+    <div class="food-grid" style="margin-top:1rem">
+      <div class="food-card"><span class="fe">🥦</span><h5>Brócoli</h5><p>Ácido fólico, hierro y calcio</p></div>
+      <div class="food-card"><span class="fe">🫘</span><h5>Lentejas</h5><p>Hierro vegetal y proteínas</p></div>
+      <div class="food-card"><span class="fe">🐟</span><h5>Salmón</h5><p>Omega-3 para el cerebro</p></div>
+      <div class="food-card"><span class="fe">🥑</span><h5>Aguacate</h5><p>Grasas sanas y folato</p></div>
+      <div class="food-card"><span class="fe">🥕</span><h5>Zanahoria</h5><p>Vitamina A y betacaroteno</p></div>
+      <div class="food-card"><span class="fe">🍊</span><h5>Naranja</h5><p>Vitamina C y ácido fólico</p></div>
+      <div class="food-card"><span class="fe">🥚</span><h5>Huevo</h5><p>Proteína completa y colina</p></div>
+      <div class="food-card"><span class="fe">🫐</span><h5>Arándanos</h5><p>Antioxidantes y vitamina C</p></div>
+      <div class="food-card"><span class="fe">🥛</span><h5>Yogur</h5><p>Calcio y probióticos</p></div>
+      <div class="food-card"><span class="fe">🌰</span><h5>Nueces</h5><p>Omega-3 y magnesio</p></div>
+      <div class="food-card"><span class="fe">🍠</span><h5>Batata</h5><p>Betacaroteno y fibra</p></div>
+      <div class="food-card"><span class="fe">🌿</span><h5>Espinacas</h5><p>Hierro, ácido fólico</p></div>
+    </div>
+  </div>
+
+  <div class="avoid-wrap">
+    <h4>⚠️ Evita durante el embarazo</h4>
+    <div class="tags-cloud">
+      <span class="food-tag">🍣 Pescado crudo</span><span class="food-tag">🧀 Quesos blandos sin pasteurizar</span>
+      <span class="food-tag">🍷 Alcohol</span><span class="food-tag">☕ Cafeína en exceso (+200mg/día)</span>
+      <span class="food-tag">🥩 Carne cruda o poco hecha</span><span class="food-tag">🐚 Marisco crudo</span>
+      <span class="food-tag">🥗 Brotes crudos</span><span class="food-tag">🐟 Pez espada y tiburón</span>
+      <span class="food-tag">🥜 Embutidos sin cocinar</span><span class="food-tag">🫙 Paté refrigerado</span>
+      <span class="food-tag">🍹 Bebidas energéticas</span><span class="food-tag">🐡 Atún en exceso</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>💊 Suplementos recomendados (SNS)</h4>
+      <ul class="dots" style="margin-top:.5rem">
+        <li><strong>Ácido fólico 400–800 mcg/día</strong> — Desde antes de quedarte embarazada hasta semana 12. Previene defectos del tubo neural.</li>
+        <li><strong>Yodo 200 mcg/día</strong> — Durante todo el embarazo y lactancia. Desarrollo tiroideo del bebé.</li>
+        <li><strong>Hierro</strong> — Especialmente en 2.º y 3.er trimestre si hay anemia. Tu médico indicará la dosis.</li>
+        <li><strong>Vitamina D 600 UI/día</strong> — Huesos y sistema inmune del bebé.</li>
+        <li><strong>DHA (omega-3)</strong> — Desarrollo cerebral y ocular del bebé.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🍽️ Ejemplo de menú diario</h4>
+      <ul class="dots" style="margin-top:.5rem">
+        <li><strong>Desayuno:</strong> Yogur natural con frutos rojos y avena. Zumo de naranja natural.</li>
+        <li><strong>Media mañana:</strong> Tostada integral con aguacate y huevo cocido.</li>
+        <li><strong>Comida:</strong> Lentejas con verduras. Pollo al horno. Fruta.</li>
+        <li><strong>Merienda:</strong> Frutos secos (puñado) y manzana.</li>
+        <li><strong>Cena:</strong> Salmón al vapor con espinacas salteadas. Yogur.</li>
+        <li><strong>Agua:</strong> Mínimo 8–10 vasos al día.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ BIENESTAR ════════ -->
+<div id="page-bienestar" class="page">
+  <span class="tag">💚 Bienestar</span>
+  <h2 class="ph">¿Cómo te <em>sientes hoy</em>?</h2>
+  <p class="ps">Registra síntomas, estado de ánimo y controla tu peso</p>
+
+  <div class="card" style="margin-bottom:1.5rem">
+    <h4>🌡️ Síntomas de hoy</h4>
+    <div class="symptom-grid" style="margin-top:.75rem">
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">🤢</span><div class="sn">Náuseas</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">😴</span><div class="sn">Cansancio</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">💫</span><div class="sn">Mareos</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">🔥</span><div class="sn">Acidez</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">😤</span><div class="sn">Hinchazón</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">💆</span><div class="sn">Dolor de cabeza</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">😰</span><div class="sn">Ansiedad</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">🚶</span><div class="sn">Dolor de espalda</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">💤</span><div class="sn">Insomnio</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">😊</span><div class="sn">Me siento bien</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">🦵</span><div class="sn">Calambres</div></div>
+      <div class="sym-card" onclick="toggleSym(this)"><span class="si">🌊</span><div class="sn">Retención líquidos</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.5rem">
+    <h4>💛 Estado de ánimo</h4>
+    <div class="mood-strip" style="margin-top:.75rem;box-shadow:none;padding:.5rem 0;background:transparent">
+      <button class="mood-btn" onclick="setMood(this)"><span class="me">😔</span><span class="ml">Triste</span></button>
+      <button class="mood-btn" onclick="setMood(this)"><span class="me">😟</span><span class="ml">Ansiosa</span></button>
+      <button class="mood-btn" onclick="setMood(this)"><span class="me">😐</span><span class="ml">Regular</span></button>
+      <button class="mood-btn" onclick="setMood(this)"><span class="me">🙂</span><span class="ml">Bien</span></button>
+      <button class="mood-btn" onclick="setMood(this)"><span class="me">😄</span><span class="ml">Genial</span></button>
+    </div>
+  </div>
+
+  <div class="weight-tracker">
+    <h4 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:1rem">⚖️ Control de peso y tensión</h4>
+    <div class="weight-inputs">
+      <div class="wi-group"><label>Peso (kg)</label><input class="wi-input" type="number" id="w-peso" placeholder="65.5" step="0.1"></div>
+      <div class="wi-group"><label>Tensión (mmHg)</label><input class="wi-input" type="text" id="w-tension" placeholder="120/80" style="width:130px"></div>
+      <div class="wi-group"><label>Fecha</label><input class="wi-input" type="date" id="w-fecha" style="width:150px"></div>
+      <button class="btn btn-sage" style="margin-top:1.4rem" onclick="addWeight()">Añadir</button>
+    </div>
+    <div class="weight-log" id="weight-log"><p style="font-size:.83rem;color:var(--light);text-align:center;padding:.75rem">Sin registros aún</p></div>
+  </div>
+
+  <div style="margin-top:1.5rem">
+    <div class="card">
+      <h4>🌿 Consejos de bienestar</h4>
+      <ul class="dots" style="margin-top:.5rem">
+        <li><strong>Ejercicio suave:</strong> Caminar 30 min/día, yoga prenatal o natación. Evita deportes de impacto o contacto.</li>
+        <li><strong>Postura para dormir:</strong> Decúbito lateral izquierdo con almohada entre rodillas. Mejora la circulación.</li>
+        <li><strong>Estrés:</strong> Respiración diafragmática, meditación guiada. El cortisol elevado puede afectar al bebé.</li>
+        <li><strong>Hidratación:</strong> 8–10 vasos de agua al día. Esencial para el líquido amniótico.</li>
+        <li><strong>Crema hidratante:</strong> Abdomen, caderas y pechos desde semana 12–14 para minimizar estrías.</li>
+        <li><strong>Suelo pélvico:</strong> Ejercicios de Kegel diarios desde el primer trimestre.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:1rem">
+    <button class="btn btn-sage btn-full" onclick="saveWellbeing()">💾 Guardar registro de hoy</button>
+  </div>
+</div>
+
+<!-- ════════ PARTO ════════ -->
+<div id="page-parto" class="page">
+  <span class="tag">👶 Preparación</span>
+  <h2 class="ph">Para el <em>gran día</em></h2>
+  <p class="ps">Checklist, plan de parto, contador de contracciones y señales de alerta</p>
+
+  <!-- CONTRACTION COUNTER -->
+  <div class="contraction-tool">
+    <h4 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:.25rem">⏱️ Contador de contracciones</h4>
+    <p style="font-size:.82rem;color:var(--light);margin-bottom:1rem">Pulsa cuando empiece y cuando termine cada contracción</p>
+    <div class="contraction-timer" id="ct-timer">00:00</div>
+    <div class="contraction-info">
+      <div class="ci-item"><div class="ci-label">Contracciones</div><div class="ci-val" id="ct-count">0</div></div>
+      <div class="ci-item"><div class="ci-label">Frecuencia media</div><div class="ci-val" id="ct-freq">—</div></div>
+      <div class="ci-item"><div class="ci-label">Duración media</div><div class="ci-val" id="ct-dur">—</div></div>
+    </div>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-rose" id="ct-btn" onclick="toggleContraction()">🔴 Inicio contracción</button>
+      <button class="btn btn-outline" onclick="resetContractions()">Reiniciar</button>
+    </div>
+    <div class="contraction-alert" id="ct-alert">🚨 ¡Contracciones frecuentes! Considera llamar a tu hospital o ir a urgencias.</div>
+    <div class="contractions-log" id="ct-log"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="checklist-block">
+      <h4>🎒 Bolsa del hospital</h4>
+      <div id="bag-list"></div>
+    </div>
+    <div class="checklist-block">
+      <h4>📋 Plan de parto</h4>
+      <div id="birth-plan-list"></div>
+    </div>
+  </div>
+
+  <div class="alert-box">
+    <h4>🚨 Señales de alarma — Ve al hospital</h4>
+    <ul class="dots">
+      <li>Sangrado vaginal importante o líquido amarillento/verdoso</li>
+      <li>Rotura de aguas (líquido claro, rosado o con olor)</li>
+      <li>Contracciones regulares cada 5 minutos durante 1 hora</li>
+      <li>Movimientos del bebé significativamente reducidos o ausentes más de 2 h</li>
+      <li>Dolor de cabeza severo, visión borrosa o "moscas" ante los ojos</li>
+      <li>Hinchazón repentina de manos, cara o pies</li>
+      <li>Fiebre superior a 38°C</li>
+      <li>Dolor abdominal intenso y continuo (no contracciones)</li>
+      <li>Sensación de presión pélvica muy intensa antes de la semana 37</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h4>📞 Números de emergencia</h4>
+    <ul class="dots" style="margin-top:.5rem">
+      <li><strong>Emergencias generales:</strong> 112</li>
+      <li><strong>Urgencias obstétricas:</strong> El de tu hospital de referencia (guárdalo en el móvil ya)</li>
+      <li><strong>Tu matrona:</strong> Anota su teléfono directo en la cartilla</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════════ PAREJA ════════ -->
+<div id="page-pareja" class="page">
+  <span class="tag rose">💙 Para la pareja</span>
+  <h2 class="ph">Guía para <em>acompañar</em></h2>
+  <p class="ps">Cómo estar presente, qué hacer y qué evitar en cada etapa</p>
+
+  <div class="partner-week-selector card" style="margin-bottom:1.5rem">
+    <h4>¿En qué semana estáis?</h4>
+    <div style="display:flex;align-items:center;gap:1rem;margin-top:.75rem">
+      <span style="font-size:.8rem;color:var(--light)">Sem 1</span>
+      <input type="range" min="1" max="42" value="8" id="partner-slider" oninput="updatePartner(+this.value)" style="-webkit-appearance:none;flex:1;height:5px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(to right,var(--sage) 0%,var(--sage) 20%,var(--cream2) 20%)">
+      <span style="font-size:.8rem;color:var(--light)">Sem 42</span>
+      <span style="font-family:var(--font-display);font-size:1.5rem;font-weight:600;color:var(--sage-d)" id="partner-week-num">8</span>
+    </div>
+  </div>
+
+  <div id="partner-content"></div>
+
+  <div class="card" style="margin-top:1.5rem">
+    <h4>🚫 Cosas que NUNCA debes decir</h4>
+    <ul class="dots" style="margin-top:.5rem">
+      <li>"Estás exagerando" — Sus síntomas son reales y a veces muy incapacitantes.</li>
+      <li>"¿Otra vez tienes náuseas?" — Las náuseas del embarazo pueden durar semanas.</li>
+      <li>"Otras mujeres lo llevan bien" — Cada embarazo es diferente. No compares.</li>
+      <li>"No seas tan dramática" — Los cambios hormonales afectan real y profundamente al estado de ánimo.</li>
+      <li>"Estás muy gorda" — Aunque sea con buena intención, es hiriente. El cuerpo está haciendo un trabajo extraordinario.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════════ DIARIO ════════ -->
+<div id="page-diario" class="page">
+  <span class="tag">📖 Diario</span>
+  <h2 class="ph">Tu diario de <em>embarazo</em></h2>
+  <p class="ps">Recuerdos que querrás guardar para siempre</p>
+
+  <div class="diary-compose card" style="margin-bottom:1.5rem">
+    <div class="diary-header">
+      <div class="diary-week-label" id="diary-week-label">Semana 8</div>
+      <span id="diary-fruit-display" style="font-size:1.5rem">🫐</span>
+      <div class="diary-date" id="diary-date"></div>
+    </div>
+    <textarea class="diary-textarea" id="diary-ta" placeholder="¿Cómo te has sentido hoy? ¿Qué has sentido? ¿Qué has soñado? Escribe lo que quieras recordar de este momento…"></textarea>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <button class="btn btn-sage" onclick="saveDiaryEntry()">💾 Guardar entrada</button>
+      <span style="font-size:.8rem;color:var(--light)">Se guarda localmente en tu dispositivo</span>
+    </div>
+  </div>
+
+  <h4 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:1rem;color:var(--mid)">Entradas anteriores</h4>
+  <div class="diary-entries" id="diary-entries">
+    <p style="font-size:.85rem;color:var(--light);text-align:center;padding:2rem">Aquí aparecerán tus entradas 🌿</p>
+  </div>
+</div>
+
+<!-- ════════ GLOSARIO ════════ -->
+<div id="page-glosario" class="page">
+  <span class="tag">📚 Glosario médico</span>
+  <h2 class="ph">Términos que te <em>explicamos</em></h2>
+  <p class="ps">Lo que dice tu médico, explicado en lenguaje humano</p>
+  <div class="glosario-search">
+    <span>🔍</span>
+    <input type="text" placeholder="Busca un término médico..." oninput="filterGlosario(this.value)">
+  </div>
+  <div id="glosario-list"></div>
+</div>
+
+<!-- ════════ POSTPARTO ════════ -->
+<div id="page-postparto" class="page">
+  <span class="tag rose">🌸 Postparto</span>
+  <h2 class="ph">Las primeras <em>semanas</em> con tu bebé</h2>
+  <p class="ps">Tu recuperación, la lactancia y los cuidados del recién nacido</p>
+
+  <div class="postparto-nav">
+    <button class="ppnav active" onclick="showPP('mama')">Mamá</button>
+    <button class="ppnav" onclick="showPP('bebe')">Bebé</button>
+    <button class="ppnav" onclick="showPP('lactancia')">Lactancia</button>
+  </div>
+
+  <div id="pp-mama">
+    <div class="grid2">
+      <div class="card">
+        <h4>🩸 Recuperación física</h4>
+        <ul class="dots" style="margin-top:.5rem">
+          <li>Loquios (sangrado) normales hasta 6 semanas. Si aumentan o huelen mal, consulta.</li>
+          <li>Dolor perineal: baños de asiento con agua templada, compresas frías primeras 24 h.</li>
+          <li>Hemorroirdes: frecuentes. Dieta rica en fibra y mucha hidratación.</li>
+          <li>Recuperación de cesárea: evita esfuerzos 4–6 semanas. La cicatriz puede tardar meses.</li>
+          <li>Revisión postparto a las 6 semanas con tu ginecólogo y matrona.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>💙 Salud emocional postparto</h4>
+        <ul class="dots" style="margin-top:.5rem">
+          <li><strong>Baby blues:</strong> Llanto e irritabilidad los primeros 3–5 días. Normal por el bajón hormonal.</li>
+          <li><strong>Depresión postparto:</strong> Si los síntomas persisten más de 2 semanas, habla con tu médico. No es un fracaso.</li>
+          <li>Pide ayuda. Acepta ayuda. Dormir es prioritario sobre cualquier tarea doméstica.</li>
+          <li>La matrona de AP hace visita domiciliaria en los primeros 15 días.</li>
+        </ul>
+      </div>
+      <div class="card full">
+        <h4>🏃 Recuperación del suelo pélvico</h4>
+        <ul class="dots" style="margin-top:.5rem">
+          <li>Espera a la revisión de las 6 semanas antes de reanudar actividad física intensa.</li>
+          <li>Los ejercicios de Kegel pueden empezarse suavemente desde la primera semana si no hay dolor.</li>
+          <li>La fisioterapia de suelo pélvico está recomendada y en muchas CCAA se ofrece en el sistema público.</li>
+          <li>Las relaciones sexuales: espera a la revisión de 6 semanas y a sentirte preparada emocionalmente.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="pp-bebe" style="display:none">
+    <div class="grid2">
+      <div class="card">
+        <h4>👶 Primeras horas y días</h4>
+        <ul class="dots" style="margin-top:.5rem">
+          <li><strong>Piel con piel:</strong> Favorece el vínculo, la lactancia y la termorregulación. Hazlo todo lo posible.</li>
+          <li><strong>Prueba del talón:</strong> Se hace a las 48h. Detecta enfermedades metabólicas.</li>
+          <li><strong>Vacuna Hepatitis B:</strong> Primeras 24h.</li>
+          <li>Los recién nacidos duermen 16–18 horas al día pero en ciclos cortos. Es normal.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🌡️ Señales de alerta en el bebé</h4>
+        <ul class="dots" style="margin-top:.5rem">
+          <li>Fiebre superior a 38°C (en menores de 3 meses, siempre urgencias).</li>
+          <li>No come o come muy poco durante más de 6 horas.</li>
+          <li>Color amarillento intenso (ictericia) que avanza.</li>
+          <li>Llanto inconsolable durante más de 3 horas.</li>
+          <li>Fontanela hundida (deshidratación) o abombada.</li>
+          <li>Menos de 6 pañales mojados al día (posible deshidratación).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="pp-lactancia" style="display:none">
+    <div class="card" style="margin-bottom:1.2rem">
+      <h4>🤱 Lactancia materna — Lo que nadie te cuenta</h4>
+      <ul class="dots" style="margin-top:.5rem">
+        <li><strong>Las primeras semanas son las más difíciles.</strong> Es normal que duela al principio. Busca apoyo de una consultora de lactancia.</li>
+        <li><strong>Agarre correcto:</strong> La boca del bebé debe abarcar gran parte de la areola, no solo el pezón.</li>
+        <li><strong>A demanda:</strong> Los primeros meses, cada 2–3 horas. El pecho produce según la demanda.</li>
+        <li><strong>Pecho doloroso/duro:</strong> Puede ser ingurgitación. Aplica calor antes de mamar y frío después.</li>
+        <li><strong>Mastitis:</strong> Si hay fiebre y zona roja en el pecho, consulta al médico. No hay que parar la lactancia.</li>
+        <li><strong>Lactancia artificial:</strong> Es igual de válida. Nunca te sientas culpable por tu elección.</li>
+        <li><strong>Recurso:</strong> LactApp (app gratuita) o tu matrona son los mejores apoyos.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TESTIMONIOS ════════ -->
+<div id="page-testimonios" class="page">
+  <span class="tag">💜 Historias</span>
+  <h2 class="ph">Historias de <em>mamás</em></h2>
+  <p class="ps">Experiencias inspiradas en vivencias reales de mujeres embarazadas. Para que no te sientas sola.</p>
+
+  <div style="background:rgba(123,158,130,.07);border:1px solid rgba(123,158,130,.2);border-radius:16px;padding:.9rem 1.2rem;margin-bottom:1.75rem;font-size:.8rem;color:var(--mid);line-height:1.6">
+    💜 Estos relatos están inspirados en experiencias ampliamente documentadas de mujeres embarazadas. Los nombres son ficticios para proteger la privacidad. Si tienes una experiencia que quieras compartir, escríbenos.
+  </div>
+
+  <!-- FILTROS -->
+  <div class="test-filters" id="test-filters"></div>
+
+  <!-- TARJETAS -->
+  <div class="test-grid" id="test-grid"></div>
+
+  <!-- MODAL -->
+  <div class="test-modal-bg" id="test-modal-bg" onclick="closeTestModal()">
+    <div class="test-modal" onclick="event.stopPropagation()">
+      <button class="test-modal-close" onclick="closeTestModal()">✕</button>
+      <div id="test-modal-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ LUNA — BASE DE CONOCIMIENTO ════════ -->
+<div id="page-chat" class="page">
+  <span class="tag">💬 Luna</span>
+  <h2 class="ph">Luna — Tu <em>matrona virtual</em></h2>
+  <p class="ps">Respuestas redactadas por profesionales, basadas en fuentes oficiales del Ministerio de Sanidad, OMS y SEGO</p>
+
+  <!-- AVISO OFICIAL -->
+  <div style="background:rgba(123,158,130,.08);border:1.5px solid rgba(123,158,130,.25);border-radius:16px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:.75rem;align-items:flex-start">
+    <span style="font-size:1.3rem;flex-shrink:0">🏥</span>
+    <div>
+      <div style="font-weight:700;font-size:.88rem;color:var(--sage-d);margin-bottom:.25rem">Información basada en fuentes oficiales</div>
+      <div style="font-size:.8rem;color:var(--mid);line-height:1.6">Luna responde con contenido extraído de la <strong>Guía de Práctica Clínica del Ministerio de Sanidad</strong>, la <strong>OMS</strong> y la <strong>SEGO</strong>. Para dudas específicas sobre tu caso, consulta siempre a tu matrona o ginecólogo. Ante una urgencia llama al <strong>112</strong> o al <strong>SITE: 91 822 24 36</strong> (Servicio de Información Telefónica para la Embarazada del Ministerio de Sanidad).</div>
+    </div>
+  </div>
+
+  <!-- CHAT UI -->
+  <div class="chat-wrap">
+    <div class="chat-head">
+      <div class="ch-av">🌿</div>
+      <div>
+        <div class="ch-name">Luna — Asistente de embarazo</div>
+        <div class="ch-status"><span class="online-dot"></span>Sin IA externa · Sin datos enviados · 100% privado</div>
+      </div>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg">
+        <div class="msg-ico">🌿</div>
+        <div class="msg-bubble">¡Hola! Soy Luna 🌱 Puedo responder tus dudas más frecuentes sobre el embarazo. Toda mi información proviene de fuentes médicas oficiales españolas. Escribe tu pregunta o elige una de las sugerencias de abajo.</div>
+      </div>
+    </div>
+    <div class="quickq" id="quick-cats">
+      <button class="qq" onclick="sendQ('náuseas vómitos primer trimestre')">🤢 Náuseas</button>
+      <button class="qq" onclick="sendQ('peso ganar embarazo')">⚖️ Peso</button>
+      <button class="qq" onclick="sendQ('ejercicio deporte embarazo')">🏃 Ejercicio</button>
+      <button class="qq" onclick="sendQ('ecografía morfológica 20 semanas')">🔬 Ecografías</button>
+      <button class="qq" onclick="sendQ('test sullivan diabetes gestacional')">🩸 Test O\'Sullivan</button>
+      <button class="qq" onclick="sendQ('epidural parto analgesia')">💉 Epidural</button>
+      <button class="qq" onclick="sendQ('cuándo urgencias hospital embarazo')">🚨 Urgencias</button>
+      <button class="qq" onclick="sendQ('suplementos vitaminas ácido fólico')">💊 Suplementos</button>
+      <button class="qq" onclick="sendQ('lactancia materna pecho')">🤱 Lactancia</button>
+      <button class="qq" onclick="sendQ('sueño dormir postura embarazo')">😴 Dormir</button>
+      <button class="qq" onclick="sendQ('movimientos bebé patadas contar')">👣 Movimientos bebé</button>
+      <button class="qq" onclick="sendQ('estreptococo grupo B SGB exudado')">🧫 Estreptococo B</button>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-ta" id="chat-ta" placeholder="Escribe tu pregunta aquí..." rows="1" onkeydown="chatKey(event)"></textarea>
+      <button class="send-btn" onclick="sendMsg()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- FUENTES -->
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem">
+    <a href="https://www.sanidad.gob.es/organizacion/sns/planCalidadSNS/0Guiaatembarazo.htm" target="_blank" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--white);border:1px solid var(--cream2);border-radius:50px;padding:6px 14px;font-size:.75rem;font-weight:600;color:var(--sage-d);text-decoration:none">🏛️ Guía Ministerio de Sanidad</a>
+    <a href="https://portal.guiasalud.es/egpc/embarazo-preguntas/" target="_blank" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--white);border:1px solid var(--cream2);border-radius:50px;padding:6px 14px;font-size:.75rem;font-weight:600;color:var(--sage-d);text-decoration:none">📋 GuíaSalud SNS</a>
+    <a href="tel:918222436" style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(212,137,122,.1);border:1px solid rgba(212,137,122,.25);border-radius:50px;padding:6px 14px;font-size:.75rem;font-weight:600;color:var(--rose-d);text-decoration:none">📞 SITE: 91 822 24 36</a>
+  </div>
+  <div class="disclaimer" style="margin-top:.75rem">⚕️ <strong>Aviso médico:</strong> Luna ofrece información general orientativa. No diagnostica, no prescribe y no reemplaza la consulta médica. Para tu caso específico, habla siempre con tu matrona o ginecólogo.</div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ════════════════════════════════════
+// DATA
+// ════════════════════════════════════
+
+const FRUITS = {
+  1:{e:'🌱',n:'Semilla microscópica',cm:'0.1',g:'<0.001'},
+  2:{e:'🌱',n:'Semilla de sésamo',cm:'0.2',g:'<0.001'},
+  3:{e:'🌱',n:'Semilla de amapola',cm:'0.3',g:'<0.001'},
+  4:{e:'🌱',n:'Semilla de amapola',cm:'0.4',g:'<0.1'},
+  5:{e:'🫙',n:'Semilla de sésamo',cm:'0.8',g:'<0.1'},
+  6:{e:'🍇',n:'Grano de granada',cm:'1.0',g:'<0.1'},
+  7:{e:'🫐',n:'Arándano',cm:'1.3',g:'<1'},
+  8:{e:'🫐',n:'Frambuesa',cm:'1.6',g:'1'},
+  9:{e:'🍇',n:'Uva',cm:'2.3',g:'2'},
+  10:{e:'🍊',n:'Kumquat (naranja pequeña)',cm:'3.1',g:'4'},
+  11:{e:'🍋',n:'Higo',cm:'4.1',g:'7'},
+  12:{e:'🍈',n:'Lima',cm:'5.4',g:'14'},
+  13:{e:'🍋',n:'Limón',cm:'6.7',g:'23'},
+  14:{e:'🍑',n:'Melocotón',cm:'8.7',g:'43'},
+  15:{e:'🍎',n:'Manzana pequeña',cm:'10',g:'70'},
+  16:{e:'🥑',n:'Aguacate',cm:'11.6',g:'100'},
+  17:{e:'🍐',n:'Pera',cm:'13',g:'140'},
+  18:{e:'🫑',n:'Pimiento',cm:'14.2',g:'190'},
+  19:{e:'🍅',n:'Tomate grande',cm:'15.3',g:'240'},
+  20:{e:'🍌',n:'Plátano',cm:'25.7',g:'300'},
+  21:{e:'🥕',n:'Zanahoria',cm:'26.7',g:'360'},
+  22:{e:'🎃',n:'Calabaza pequeña',cm:'27.8',g:'430'},
+  23:{e:'🥭',n:'Mango grande',cm:'28.9',g:'500'},
+  24:{e:'🌽',n:'Mazorca de maíz',cm:'30',g:'600'},
+  25:{e:'🥒',n:'Pepino',cm:'34.6',g:'660'},
+  26:{e:'🥦',n:'Coliflor',cm:'35.6',g:'760'},
+  27:{e:'🥬',n:'Lechuga',cm:'36.6',g:'875'},
+  28:{e:'🍆',n:'Berenjena',cm:'37.6',g:'1000'},
+  29:{e:'🥒',n:'Zucchini',cm:'38.6',g:'1150'},
+  30:{e:'🥒',n:'Pepino grande',cm:'39.9',g:'1320'},
+  31:{e:'🥬',n:'Col de Napa',cm:'41.1',g:'1500'},
+  32:{e:'🍍',n:'Piña',cm:'42.4',g:'1700'},
+  33:{e:'🍈',n:'Melón cantalupo',cm:'43.7',g:'1900'},
+  34:{e:'🍈',n:'Melón verde pequeño',cm:'45',g:'2100'},
+  35:{e:'🥬',n:'Lechuga romana',cm:'46.2',g:'2400'},
+  36:{e:'🍈',n:'Papaya grande',cm:'47.4',g:'2600'},
+  37:{e:'🥬',n:'Acelga grande',cm:'48.6',g:'2900'},
+  38:{e:'🎃',n:'Calabaza de agua',cm:'49.8',g:'3100'},
+  39:{e:'🎃',n:'Calabaza grande',cm:'50.7',g:'3300'},
+  40:{e:'🍉',n:'Sandía pequeña',cm:'51.2',g:'3400'},
+  41:{e:'🍉',n:'Sandía',cm:'51.7',g:'3600'},
+  42:{e:'🍉',n:'Sandía grande',cm:'52',g:'3800'},
+};
+
+const WEEK_DATA = {
+  1:{baby:['El óvulo se libera y es fertilizado','Se forma el cigoto con todo el ADN','Inicia el viaje por la trompa de Falopio'],mom:['Tu ciclo menstrual comienza','Toma ácido fólico si no lo haces ya','El test puede ser negativo aún'],symptoms:['Posible sangrado ligero de implantación','Puede que no notes nada todavía']},
+  4:{baby:['El embrión se implanta en el útero','Las capas germinales se forman','El corazón primitivo empieza a formarse'],mom:['Se produce la hCG, la hormona del embarazo','El útero comienza a prepararse','Primer retraso menstrual'],symptoms:['Sensibilidad en los pechos','Ligero manchado de implantación','Fatiga inicial']},
+  5:{baby:['El corazón empieza a latir','Se forma el tubo neural','Aparecen las yemas de brazos y piernas'],mom:['Las náuseas pueden comenzar','Necesitas orinar con más frecuencia','El olfato se agudiza'],symptoms:['Náuseas matutinas (a cualquier hora)','Cansancio intenso','Sensibilidad extrema al olfato']},
+  6:{baby:['El corazón late ya ~100 veces/min','Se forman los rasgos faciales básicos','Comienza la formación del cerebro'],mom:['El útero ha crecido algo','Las náuseas pueden ser frecuentes','El agotamiento es máximo'],symptoms:['Náuseas frecuentes','Salivación excesiva','Cambios de humor']},
+  7:{baby:['Los párpados empiezan a formarse','Los dedos comienzan a separarse','Tiene el tamaño de un arándano grande'],mom:['Puede aparecer aversión a ciertos alimentos','El pecho puede estar muy sensible','Posibles náuseas todo el día'],symptoms:['Náuseas intensas','Vómitos posibles','Muy cansada','Hinchazón abdominal']},
+  8:{baby:['Todas las estructuras principales están formadas','El corazón late 150–170 veces/min','Aparecen los primeros movimientos (no los sientes)','Los dedos están casi separados'],mom:['El útero ha doblado su tamaño','Las náuseas suelen estar en su punto máximo','Primera cita médica si no la has tenido'],symptoms:['Náuseas frecuentes','Cansancio intenso','Ganas frecuentes de orinar','Sensibilidad en los pechos','Acidez inicial']},
+  10:{baby:['Ya es oficialmente un feto','El sistema esquelético empieza a osificarse','Tiene los órganos vitales en su lugar','Puede mover las articulaciones'],mom:['El útero tiene ya el tamaño de una naranja','Puede que tengas más hambre','El cansancio puede empezar a mejorar un poco'],symptoms:['Náuseas (pueden mejorar pronto)','Posibles dolores de cabeza','Cambios en el apetito']},
+  12:{baby:['Reflejos ya funcionan','Los riñones producen orina','El bebé puede succionar el dedo','Las uñas empiezan a crecer'],mom:['¡Fin del primer trimestre! 🎉','Riesgo de aborto baja significativamente','Puedes anunciar el embarazo si quieres'],symptoms:['Las náuseas empiezan a remitir','Más energía progresivamente','Puede aparecer la línea alba','Fin del agotamiento extremo']},
+  14:{baby:['Puede entrecerrar los ojos','Ya puede fruncir el ceño','Sus huellas dactilares son únicas'],mom:['Inicio del 2.º trimestre 🌟','El "baby bump" comienza a ser visible','Más energía y bienestar general'],symptoms:['Sensación de bienestar','El vientre crece','Posibles calambres en las piernas']},
+  16:{baby:['Puede escuchar sonidos externos','Los ojos se mueven aunque cerrados','Hace movimientos de succión','El sistema nervioso madura'],mom:['El abdomen empieza a redondearse','Más energía, mejor humor','Posible aparición de pigmentación'],symptoms:['Aumento del apetito','Posibles dolores lumbares leves','Calambres ocasionales en piernas']},
+  18:{baby:['Puede bostezar y tener hipo','El sistema auditivo se desarrolla','La piel es transparente pero se engrosa'],mom:['Próxima a sentir los primeros movimientos','El útero llega a la altura del ombligo','Revisión médica importante próxima'],symptoms:['Puede haber mareos al levantarse','Congestión nasal frecuente','Inicio del dolor de espalda']},
+  20:{baby:['¡Mitad del embarazo!','Sus huellas dactilares ya están formadas','Ciclos de sueño y vigilia regulares','La piel está cubierta de vérnix caseosa'],mom:['Ecografía morfológica — la más completa','El ombligo puede empezar a sobresalir','Los movimientos del bebé son perceptibles'],symptoms:['Movimientos del bebé (como burbujas)','Ardor de estómago frecuente','Calambres nocturnos en piernas']},
+  24:{baby:['Sus pulmones siguen desarrollándose','Reacciona a la luz y al sonido','Pesa aproximadamente 600 g'],mom:['El útero llega al ombligo','Test de O\'Sullivan esta semana aprox.','Los pechos pueden empezar a producir calostro'],symptoms:['Dolor de espalda más marcado','Hinchazón leve en pies y tobillos','Estrías posibles (crema hidratante!)']},
+  28:{baby:['Abre y cierra los ojos','El cerebro se desarrolla rápidamente','Puede tener hipo perceptible','Reacciona a la voz de mamá'],mom:['Inicio del 3.er trimestre 🌟','Visitas médicas más frecuentes desde ahora','Las clases de preparación al parto empiezan'],symptoms:['Dificultad para dormir','Movimientos más fuertes y visibles','Más cansancio','Contracciones de Braxton Hicks posibles']},
+  32:{baby:['Tiene uñas en manos y pies','El lanugo desaparece gradualmente','Practica la respiración','Puede estar cabeza abajo ya'],mom:['Prepara la bolsa del hospital','Las contracciones de Braxton Hicks son normales','Posibles molestias en las costillas'],symptoms:['Dificultad para respirar (el útero presiona el diafragma)','Acidez intensa','Insomnio creciente','Contracciones de práctica']},
+  36:{baby:['Casi listo — >99% supervivencia si nace ahora','Pulmones casi maduros','Ocupa casi todo el útero'],mom:['El bebé suele "encajarse" en la pelvis','Más fácil respirar','Revisiones semanales desde ahora'],symptoms:['Presión pélvica intensa','Insomnio difícil','Mezcla de ansiedad y emoción — ¡es normal!']},
+  40:{baby:['Completamente desarrollado','Preparado para respirar aire','Listo para conocerte'],mom:['¡Fecha probable de parto!','Es completamente normal pasar de la semana 40','El cuerpo se prepara activamente'],symptoms:['Contracciones irregulares (Braxton Hicks frecuentes)','Pérdida del tapón mucoso posible','Mucha impaciencia — ¡normal y comprensible!']}
+};
+
+function getWD(w){
+  const ks=Object.keys(WEEK_DATA).map(Number).sort((a,b)=>a-b);
+  let best=ks[0];
+  for(const k of ks){if(k<=w)best=k;else break;}
+  return WEEK_DATA[best];
+}
+
+const APPOINTMENTS = [
+  {sem:'< 12 semanas',n:'1.ª Visita — Captación',who:'Matrona / Médico de familia',details:'Historia clínica completa. Analítica 1.er trimestre (hemograma, grupo sanguíneo, Rh, serologías, glucosa, orina). Control tensión y peso. Prescripción de ácido fólico y yodo. Cribado de cromosomopatías (Triple screening bioquímico). Derivación a obstetricia.',badge:'Analítica 1.er trimestre'},
+  {sem:'Semanas 11–14',n:'2.ª Visita — 1.ª Ecografía',who:'Obstetricia (ginecólogo)',details:'Primera ecografía: confirma la gestación, mide la translucencia nucal, data la gestación. Valoración de resultados de analítica y cribado de Síndrome de Down y otras cromosomopatías. Si riesgo > 1/270 se ofrece amniocentesis.',badge:'Ecografía 1.er trimestre'},
+  {sem:'Semanas 16–18',n:'3.ª Visita — Matrona',who:'Matrona Atención Primaria',details:'Seguimiento de la gestación. Exploración física. Solicitud analítica 2.º trimestre con test de O\'Sullivan (detección diabetes gestacional). Recomendaciones sobre cuidados. Información sobre clases de preparación al parto.',badge:'Analítica 2.º trimestre'},
+  {sem:'Semanas 18–22',n:'4.ª Visita — Ecografía morfológica',who:'Obstetricia',details:'La ecografía más importante. Estudio morfológico completo del bebé. Valora el crecimiento, placenta, líquido amniótico y posibles malformaciones (detecta hasta el 70%). Toma de tensión y peso. Solicitud analítica semana 24–25.',badge:'Eco morfológica 20 semanas',highlight:true},
+  {sem:'Semanas 25–27',n:'5.ª Visita — Matrona',who:'Matrona Atención Primaria',details:'Seguimiento. Valoración test de O\'Sullivan. Auscultación fetal. Control tensión y peso. Administración gammaglobulina anti-D a madres con Rh negativo si Test de Coombs negativo. Información sobre donación de sangre de cordón y plan de parto.',badge:'Test O\'Sullivan'},
+  {sem:'Semanas 28–31',n:'6.ª Visita — Matrona',who:'Matrona Atención Primaria',details:'Solicitud analítica 3.er trimestre (hemograma, coagulación, bioquímica, orina). Solicitud ecografía 3.er trimestre y exudado vagino-rectal (cultivo para Estreptococo Grupo B). Revisión plan de parto. Información sobre señales de alarma.',badge:'Analítica 3.er trimestre'},
+  {sem:'Semanas 32–35',n:'7.ª Visita — 3.ª Ecografía',who:'Obstetricia',details:'Ecografía del tercer trimestre: control crecimiento fetal, posición del bebé, placenta y líquido amniótico. Valoración resultados analítica 3.er trimestre. Solicitud de consulta con anestesia para información sobre epidural.',badge:'Ecografía 3.er trimestre'},
+  {sem:'Semanas 35–37',n:'8.ª Visita — Matrona',who:'Matrona Atención Primaria',details:'Exudado vagino-rectal (SGB). Valoración posición fetal. Elaboración definitiva del plan de parto. Información sobre síntomas de inicio de parto, cuándo ir al hospital y qué llevar. Firma del consentimiento informado para epidural.',badge:'Plan de parto'},
+  {sem:'Semanas 37–39',n:'9.ª Visita — Fisiopatología Fetal',who:'Hospital de referencia',details:'Monitorización cardiotocográfica (registro de latidos fetales y contracciones). Valoración bienestar fetal. Revisión estado cervical. Se establece plan de seguimiento final.',badge:'Monitorización fetal'},
+  {sem:'Semana 40',n:'10.ª Visita — Control hospitalario',who:'Hospital de referencia',details:'Consulta de Fisiopatología Fetal en el hospital. Si no ha iniciado el parto se valora inducción. Monitorización fetal. Si todo va bien puede planificarse el parto en próximos días.',badge:'Control 40 semanas'}
+];
+
+const PARTNER_TIPS = {
+  1:{tips:[
+    {icon:'💊',t:'Apoya los suplementos',p:'Recuérdale tomar el ácido fólico diariamente. Hazlo parte de la rutina de pareja.'},
+    {icon:'🤫',t:'Guardar el secreto',p:'Si decidís no anunciarlo aún, sé su confidente. Este secreto compartido une mucho.'},
+    {icon:'📚',t:'Informarse juntos',p:'Lee sobre el embarazo. Compartir el conocimiento hace que ambos os sintáis parte del proceso.'}
+  ]},
+  8:{tips:[
+    {icon:'🤢',t:'Las náuseas son reales',p:'No son exageración. Algunas mujeres vomitan hasta 10 veces al día. Ten paciencia y preparadas bolsitas, menta y galletas saladas.'},
+    {icon:'😴',t:'El cansancio es brutal',p:'En el primer trimestre el agotamiento puede ser paralizante. Cubre las tareas domésticas sin que te lo pida.'},
+    {icon:'🛒',t:'Control de la compra',p:'Muchos alimentos pueden provocarle arcadas. Consulta qué puede tolerar antes de hacer la compra.'}
+  ]},
+  14:{tips:[
+    {icon:'🌟',t:'El mejor trimestre',p:'El segundo trimestre suele traer más energía y bienestar. Es buen momento para planes especiales juntos.'},
+    {icon:'👂',t:'Escuchar al bebé',p:'Con un doppler casero o en las revisiones podréis escuchar el latido. Es un momento muy emocionante.'},
+    {icon:'🏃',t:'Actividad física juntos',p:'Paseos, yoga prenatal, natación. Hacer ejercicio juntos la apoya y refuerza el vínculo.'}
+  ]},
+  28:{tips:[
+    {icon:'🎒',t:'Prepara la bolsa',p:'Ayuda a preparar la bolsa del hospital juntos. Revisar la lista en pareja reduce la ansiedad de ambos.'},
+    {icon:'🚗',t:'Instala la silla de coche',p:'La silla de bebé debe estar instalada antes del parto. Hazlo con tiempo y pide que te la revisen en la tienda.'},
+    {icon:'💆',t:'Masajes en la espalda',p:'El dolor lumbar es intenso en el 3.er trimestre. Un masaje suave en la zona lumbar es muy agradecido.'}
+  ]},
+  36:{tips:[
+    {icon:'📱',t:'Móvil siempre cargado',p:'Asegúrate de tener el móvil con batería y cobertura en todo momento. El parto puede empezar en cualquier momento.'},
+    {icon:'🗺️',t:'Conoce la ruta al hospital',p:'Haced el trayecto de práctica. Calcula tiempos para diferentes horas del día.'},
+    {icon:'❤️',t:'Presencia y calma',p:'En el parto, tu función más importante es estar presente, calm@ y darle la mano. No necesitas hacer nada especial.'}
+  ]}
+};
+
+function getPartnerTips(w){
+  const ks=Object.keys(PARTNER_TIPS).map(Number).sort((a,b)=>a-b);
+  let best=ks[0];
+  for(const k of ks){if(k<=w)best=k;else break;}
+  return PARTNER_TIPS[best].tips;
+}
+
+const GLOSARIO_TERMS = [
+  {w:'Ácido fólico',d:'Vitamina del grupo B esencial para prevenir defectos del tubo neural (espina bífida). Se recomienda tomar 400–800 mcg/día desde antes de quedarse embarazada hasta la semana 12.'},
+  {w:'Amniocentesis',d:'Prueba diagnóstica invasiva en la que se extrae una pequeña muestra de líquido amniótico para analizar los cromosomas del bebé. Se ofrece cuando el cribado de cromosomopatías da riesgo elevado (> 1/270).'},
+  {w:'Analítica perinatal',d:'Conjunto de análisis de sangre y orina que se realizan en cada trimestre del embarazo para controlar el estado de salud de la madre y el bebé.'},
+  {w:'Cartilla de salud de la embarazada',d:'Documento oficial donde se registran todas las visitas, pruebas y resultados del embarazo. Debes llevarlo siempre a las citas y al hospital.'},
+  {w:'Cribado de cromosomopatías',d:'Prueba combinada de la semana 12 que analiza la translucencia nucal (ecografía) más marcadores bioquímicos de sangre para calcular el riesgo de Síndrome de Down, Edwards y Patau.'},
+  {w:'CRL (Crown-Rump Length)',d:'Medida de longitud desde la coronilla hasta la rabadilla del embrión. Es la medida más usada en el primer trimestre para datar la gestación con precisión.'},
+  {w:'Decúbito lateral izquierdo',d:'Posición de dormir sobre el lado izquierdo del cuerpo. Recomendada en el embarazo porque mejora la circulación de retorno y el flujo sanguíneo al útero y los riñones.'},
+  {w:'Doppler fetal',d:'Dispositivo de ultrasonidos que permite escuchar los latidos del corazón del bebé. Tu matrona lo usará en cada visita. Hay versiones caseras para uso en casa.'},
+  {w:'Estreptococo Grupo B (SGB)',d:'Bacteria que puede colonizar la vagina o el recto de la madre sin producir síntomas, pero que podría infectar al bebé durante el parto. Se detecta mediante un exudado vagino-rectal entre las semanas 35 y 37.'},
+  {w:'FPP / FUR',d:'FPP = Fecha Probable de Parto. FUR = Fecha de Última Regla. La FPP se calcula sumando 280 días (40 semanas) a la FUR. Es solo una estimación: el 95% de los partos ocurren entre las semanas 38 y 42.'},
+  {w:'Gammaglobulina anti-D',d:'Inyección que se administra a las madres con sangre Rh negativo en la semana 28 para prevenir la isoinmunización Rh, que podría afectar a futuros embarazos.'},
+  {w:'Hiperemesis gravídica',d:'Forma severa de náuseas y vómitos del embarazo que puede provocar deshidratación y pérdida de peso significativa. Requiere tratamiento médico, a veces hospitalario.'},
+  {w:'Loquios',d:'Sangrado vaginal normal después del parto, similar a una menstruación abundante. Va disminuyendo en las primeras semanas. Si aumenta o huele mal, consulta.'},
+  {w:'Matrona',d:'Profesional sanitaria especializada en salud sexual, reproductiva y maternal. Es tu referente principal durante el embarazo de bajo riesgo en Atención Primaria en el sistema de salud español.'},
+  {w:'Meconio',d:'Primera deposición del recién nacido, de color verde oscuro casi negro. Es el contenido intestinal acumulado durante la gestación. Si aparece en el líquido amniótico antes del parto, puede indicar estrés fetal.'},
+  {w:'Monitorización cardiotocográfica (CTG)',d:'Prueba que registra simultáneamente los latidos del corazón fetal y las contracciones del útero. Se realiza en las últimas semanas y en el parto para evaluar el bienestar fetal.'},
+  {w:'Placenta previa',d:'Condición en la que la placenta se implanta cubriendo parcial o totalmente el cuello del útero. Puede causar sangrado y suele requerir cesárea programada.'},
+  {w:'Preeclampsia',d:'Complicación del embarazo caracterizada por tensión arterial alta (> 140/90) y proteínas en la orina después de la semana 20. Requiere control médico estrecho. Señales: dolor de cabeza, visión borrosa, hinchazón rápida.'},
+  {w:'Prueba del talón',d:'Análisis de sangre que se hace al recién nacido a las 48–72 h de vida mediante un pinchazo en el talón. Detecta más de 20 enfermedades metabólicas tratables.'},
+  {w:'Suelo pélvico',d:'Conjunto de músculos y tejidos que forman la base de la pelvis y sostienen la vejiga, el útero y el recto. El embarazo y el parto pueden debilitarlo; los ejercicios de Kegel ayudan a fortalecerlo.'},
+  {w:'Test de O\'Sullivan',d:'Prueba de detección de diabetes gestacional. Se bebe una solución de glucosa y se mide el nivel de azúcar en sangre una hora después. Si el resultado es alterado, se realiza la curva de glucemia completa.'},
+  {w:'Translucencia nucal',d:'Medida ecográfica del líquido acumulado en la nuca del feto en la semana 11–14. Un valor aumentado puede indicar mayor riesgo de cromosomopatías o cardiopatías.'},
+  {w:'Vérnix caseosa',d:'Sustancia blanquecina y grasa que recubre la piel del feto a partir del segundo trimestre. Actúa como protector de la piel en el líquido amniótico y facilita el paso por el canal del parto.'}
+];
+
+const BAG_ITEMS = [
+  'DNI / tarjeta sanitaria','Cartilla de embarazo',
+  'Plan de parto impreso (3 copias)','Camisón o ropa cómoda para el parto',
+  'Ropa cómoda para el postparto (2 mudas)','Calcetines antideslizantes',
+  'Neceser y artículos de higiene básica','Cargador de móvil + cable',
+  '3 mudas de ropa para el bebé','Pañales recién nacido (12 uds)',
+  'Mantas para el bebé (2)','Silla de coche instalada (antes del parto)',
+  'Sujetador de lactancia (2)','Discos absorbentes para pecho',
+  'Compresas postparto (extra grandes)','Botella de agua grande',
+  'Snacks para el acompañante (y para ti después del parto)','Auriculares y música/podcast',
+  'Almohada de casa (opcional pero muy agradecida)','Papeles del seguro/mutua si aplica'
+];
+
+const BIRTH_PLAN_ITEMS = [
+  '¿Quién será tu acompañante durante todo el parto?',
+  '¿Deseas analgesia epidural? (¿o prefieres parto sin epidural?)','¿Quieres libertad de movimiento durante la dilatación?',
+  '¿Deseas música, aromaterapia o luz especial?','¿Quieres parir en posición libre (no solo tumbada)?',
+  '¿Deseas esperar a cortar el cordón umbilical (pinzamiento tardío)?','¿Quién quieres que corte el cordón?',
+  '¿Deseas piel con piel inmediato tras el nacimiento?','¿Lactancia materna o artificial?',
+  '¿Deseas donar la sangre del cordón umbilical?','¿Tienes alergias a medicamentos que el equipo debe conocer?'
+];
+
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+let currentWeek = 8;
+let chatHistory = [];
+let diaryEntries = [];
+let weightLog = [];
+let contracting = false;
+let contractionStart = null;
+let contractionTimer = null;
+let contractions = [];
+
+// ════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-bar .np').forEach((t,i)=>{
+    const ids=['inicio','citas','semanas','nutricion','bienestar','parto','pareja','diario','glosario','postparto','testimonios','chat'];
+    t.classList.toggle('active',ids[i]===id);
+  });
+  document.querySelectorAll('.mob-tab').forEach((t,i)=>{
+    const ids=['inicio','semanas','parto','testimonios','chat'];
+    t.classList.toggle('active',ids[i]===id);
+  });
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════
+// FRUIT VISUALIZER
+// ════════════════════════════════════
+function updateAll(w){
+  currentWeek=w;
+  saveLocal('week', w);
+  document.getElementById('fv-num').textContent=w;
+  document.getElementById('nav-week').textContent=w;
+  document.getElementById('sw-display').textContent='Semana '+w;
+  document.getElementById('diary-week-label').textContent='Semana '+w;
+  const f=FRUITS[w]||FRUITS[40];
+  const pct=((w-1)/41)*100;
+  document.getElementById('main-slider').style.setProperty('--p',pct+'%');
+  document.getElementById('main-slider').value=w;
+  document.getElementById('fv-emoji').textContent=f.e;
+  document.getElementById('fv-name').textContent=f.n;
+  document.getElementById('fv-caption').textContent='Semana '+w;
+  document.getElementById('diary-fruit-display').textContent=f.e;
+  document.getElementById('baby-stats').innerHTML=`
+    <div class="bstat"><div class="bstat-icon">📏</div><div class="bstat-info"><div class="bstat-label">Longitud aprox.</div><div class="bstat-val">${f.cm} cm</div></div></div>
+    <div class="bstat"><div class="bstat-icon">⚖️</div><div class="bstat-info"><div class="bstat-label">Peso aprox.</div><div class="bstat-val">${f.g} g</div></div></div>
+    <div class="bstat"><div class="bstat-icon">📅</div><div class="bstat-info"><div class="bstat-label">Trimestre</div><div class="bstat-val">${w<=13?'1.º Trimestre':w<=26?'2.º Trimestre':'3.º Trimestre'}</div></div></div>
+    <div class="bstat"><div class="bstat-icon">⏳</div><div class="bstat-info"><div class="bstat-label">Semanas para el parto</div><div class="bstat-val">${Math.max(0,40-w)} semanas</div></div></div>
+  `;
+  updateTrimester(w);
+  updateWeekDetail(w);
+  updatePartner(w);
+  document.getElementById('partner-slider').value=w;
+  const pct2=((w-1)/41)*100;
+  document.getElementById('partner-slider').style.background=`linear-gradient(to right,var(--sage) 0%,var(--sage) ${pct2}%,var(--cream2) ${pct2}%)`;
+  document.getElementById('partner-week-num').textContent=w;
+}
+
+function updateTrimester(w){
+  const el=document.getElementById('tri-prog');
+  if(!el)return;
+  el.innerHTML=`
+    <div class="tri-seg ${w>13?'done':w>=1?'current':'pending'}"><div class="ts-label">1.er Trimestre</div><div class="ts-weeks">Sem 1–13</div></div>
+    <div class="tri-seg ${w>26?'done':w>=14?'current':'pending'}"><div class="ts-label">2.º Trimestre</div><div class="ts-weeks">Sem 14–26</div></div>
+    <div class="tri-seg ${w>=27?'current':'pending'}"><div class="ts-label">3.er Trimestre</div><div class="ts-weeks">Sem 27–42</div></div>
+  `;
+}
+
+// ════════════════════════════════════
+// WEEK DETAIL
+// ════════════════════════════════════
+function updateWeekDetail(w){
+  const el=document.getElementById('sw-content');
+  if(!el)return;
+  const d=getWD(w);
+  const f=FRUITS[w]||FRUITS[40];
+  el.innerHTML=`
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:4rem;margin-bottom:.5rem">${f.e}</div>
+      <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--sage-d)">${f.n}</div>
+      <div style="font-size:.85rem;color:var(--light)">${f.cm} cm · ${f.g} g</div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h4>🌱 Desarrollo del bebé</h4><ul class="dots" style="margin-top:.5rem">${d.baby.map(b=>`<li>${b}</li>`).join('')}</ul></div>
+      <div class="card"><h4>🤱 Tu cuerpo</h4><ul class="dots" style="margin-top:.5rem">${d.mom.map(m=>`<li>${m}</li>`).join('')}</ul></div>
+      <div class="card full"><h4>💊 Síntomas comunes esta semana</h4><ul class="dots" style="margin-top:.5rem">${d.symptoms.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+    </div>
+  `;
+}
+
+function chWeek(d){
+  const nw=Math.max(1,Math.min(42,currentWeek+d));
+  updateAll(nw);
+}
+
+// ════════════════════════════════════
+// CALCULADORA FPP
+// ════════════════════════════════════
+function calcFPP(){
+  const val=document.getElementById('fur-input').value;
+  if(!val)return;
+  const fur=new Date(val);
+  const fpp=new Date(fur);fpp.setDate(fpp.getDate()+280);
+  const today=new Date();
+  const diffDays=Math.floor((today-fur)/(1000*60*60*24));
+  const weeks=Math.floor(diffDays/7);
+  const days=diffDays%7;
+  const daysToFPP=Math.max(0,Math.floor((fpp-today)/(1000*60*60*24)));
+  const tri=weeks<=13?'1.er Trimestre':weeks<=26?'2.º Trimestre':'3.er Trimestre';
+  const months=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const fppStr=`${fpp.getDate()} ${months[fpp.getMonth()]} ${fpp.getFullYear()}`;
+  document.getElementById('cr-week').textContent=`Semana ${weeks} + ${days} días`;
+  document.getElementById('cr-fpp').textContent=fppStr;
+  document.getElementById('cr-tri').textContent=tri;
+  document.getElementById('cr-days').textContent=daysToFPP>0?`${daysToFPP} días`:'¡Ya es la fecha!';
+  const res=document.getElementById('calc-result');
+  res.classList.add('show');
+  if(weeks>=1&&weeks<=42)updateAll(Math.max(1,Math.min(42,weeks)));
+}
+
+// ════════════════════════════════════
+// APPOINTMENTS TIMELINE
+// ════════════════════════════════════
+function renderAptTimeline(){
+  const el=document.getElementById('apt-timeline');
+  if(!el)return;
+  el.innerHTML=APPOINTMENTS.map((a,i)=>`
+    <div class="apt ${a.highlight?'next':''}">
+      <div class="apt-card">
+        <div class="apt-week">${a.sem}</div>
+        <div class="apt-title">${a.n}</div>
+        <div style="font-size:.75rem;color:var(--light);margin-bottom:.4rem">👤 ${a.who}</div>
+        <div class="apt-details">${a.details}</div>
+        <span class="apt-badge ${a.highlight?'':'green'}">${a.badge}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ════════════════════════════════════
+// CHECKLISTS
+// ════════════════════════════════════
+function renderChecklists(){
+  const bag=document.getElementById('bag-list');
+  const bp=document.getElementById('birth-plan-list');
+  if(bag) bag.innerHTML=BAG_ITEMS.map(item=>`
+    <div class="check-row" onclick="toggleCheck(this)">
+      <div class="chk"></div>
+      <div class="chk-text">${item}</div>
+    </div>`).join('');
+  if(bp) bp.innerHTML=BIRTH_PLAN_ITEMS.map(item=>`
+    <div class="check-row" onclick="toggleCheck(this)">
+      <div class="chk"></div>
+      <div class="chk-text">${item}</div>
+    </div>`).join('');
+}
+
+function toggleCheck(row){
+  const box=row.querySelector('.chk');
+  const txt=row.querySelector('.chk-text');
+  const on=box.classList.toggle('on');
+  box.textContent=on?'✓':'';
+  txt.classList.toggle('done',on);
+}
+
+// ════════════════════════════════════
+// BIENESTAR
+// ════════════════════════════════════
+function toggleSym(el){el.classList.toggle('on')}
+function setMood(el){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on')}
+
+function addWeight(){
+  const p=document.getElementById('w-peso').value;
+  const t=document.getElementById('w-tension').value;
+  const f=document.getElementById('w-fecha').value;
+  if(!p&&!t){toast('Introduce al menos el peso o la tensión');return;}
+  const d=f||new Date().toISOString().split('T')[0];
+  weightLog.unshift({peso:p,tension:t,fecha:d,semana:currentWeek});
+  saveLocal('weight', weightLog);
+  renderWeightLog();
+  document.getElementById('w-peso').value='';
+  document.getElementById('w-tension').value='';
+  toast('Guardado en tu dispositivo ✓');
+}
+
+function renderWeightLog(){
+  const el=document.getElementById('weight-log');
+  if(!el)return;
+  if(weightLog.length===0){el.innerHTML='<p style="font-size:.83rem;color:var(--light);text-align:center;padding:.75rem">Sin registros aún</p>';return;}
+  el.innerHTML=weightLog.map(w=>`
+    <div class="wlog-item">
+      <span class="wlog-date">Sem ${w.semana} · ${w.fecha}</span>
+      <span class="wlog-val">${w.peso?w.peso+' kg':''} ${w.tension?'· '+w.tension+' mmHg':''}</span>
+    </div>`).join('');
+}
+
+function saveWellbeing(){toast('✅ Registro del día guardado 💚')}
+
+// ════════════════════════════════════
+// CONTRACTION COUNTER
+// ════════════════════════════════════
+let ctInterval=null;
+function toggleContraction(){
+  if(!contracting){
+    contracting=true;
+    contractionStart=Date.now();
+    document.getElementById('ct-btn').textContent='⏸️ Fin de contracción';
+    document.getElementById('ct-btn').className='btn btn-sage';
+    ctInterval=setInterval(updateCTTimer,1000);
+  } else {
+    contracting=false;
+    clearInterval(ctInterval);
+    const dur=Math.round((Date.now()-contractionStart)/1000);
+    const prev=contractions.length>0?contractions[contractions.length-1]:null;
+    const freq=prev?Math.round((contractionStart-prev.start)/1000):null;
+    contractions.push({start:contractionStart,dur,freq,n:contractions.length+1});
+    document.getElementById('ct-btn').textContent='🔴 Inicio contracción';
+    document.getElementById('ct-btn').className='btn btn-rose';
+    document.getElementById('ct-timer').textContent='00:00';
+    updateCTStats();
+    renderCTLog();
+  }
+}
+
+function updateCTTimer(){
+  const sec=Math.round((Date.now()-contractionStart)/1000);
+  const m=String(Math.floor(sec/60)).padStart(2,'0');
+  const s=String(sec%60).padStart(2,'0');
+  document.getElementById('ct-timer').textContent=m+':'+s;
+}
+
+function updateCTStats(){
+  const n=contractions.length;
+  document.getElementById('ct-count').textContent=n;
+  if(n>0){
+    const avgDur=Math.round(contractions.reduce((s,c)=>s+c.dur,0)/n);
+    document.getElementById('ct-dur').textContent=avgDur+'s';
+  }
+  const withFreq=contractions.filter(c=>c.freq!==null);
+  if(withFreq.length>0){
+    const avgFreq=Math.round(withFreq.reduce((s,c)=>s+c.freq,0)/withFreq.length);
+    const mins=Math.floor(avgFreq/60);
+    const secs=avgFreq%60;
+    document.getElementById('ct-freq').textContent=mins+'m '+secs+'s';
+    const alertEl=document.getElementById('ct-alert');
+    if(avgFreq<=300&&n>=3){alertEl.style.display='block';}else{alertEl.style.display='none';}
+  }
+}
+
+function renderCTLog(){
+  const el=document.getElementById('ct-log');
+  if(!el)return;
+  el.innerHTML=contractions.slice().reverse().map(c=>`
+    <div class="clog-row">
+      <span style="color:var(--light)">Contracción ${c.n}</span>
+      <span>Duración: <strong>${c.dur}s</strong></span>
+      <span>${c.freq?'Intervalo: <strong>'+Math.floor(c.freq/60)+'m '+c.freq%60+'s</strong>':'—'}</span>
+    </div>`).join('');
+}
+
+function resetContractions(){
+  contractions=[];
+  contracting=false;
+  clearInterval(ctInterval);
+  document.getElementById('ct-timer').textContent='00:00';
+  document.getElementById('ct-count').textContent='0';
+  document.getElementById('ct-freq').textContent='—';
+  document.getElementById('ct-dur').textContent='—';
+  document.getElementById('ct-alert').style.display='none';
+  document.getElementById('ct-log').innerHTML='';
+  document.getElementById('ct-btn').textContent='🔴 Inicio contracción';
+  document.getElementById('ct-btn').className='btn btn-rose';
+}
+
+// ════════════════════════════════════
+// PAREJA
+// ════════════════════════════════════
+function updatePartner(w){
+  const el=document.getElementById('partner-content');
+  if(!el)return;
+  const tips=getPartnerTips(w);
+  el.innerHTML=tips.map(t=>`
+    <div class="partner-tip">
+      <div class="pt-icon">${t.icon}</div>
+      <h5>${t.t}</h5>
+      <p>${t.p}</p>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════
+// DIARY
+// ════════════════════════════════════
+function saveDiaryEntry(){
+  const text=document.getElementById('diary-ta').value.trim();
+  if(!text){toast('Escribe algo antes de guardar 🌿');return;}
+  const now=new Date();
+  const f=FRUITS[currentWeek]||FRUITS[40];
+  diaryEntries.unshift({week:currentWeek,fruit:f.e,fruitName:f.n,text,date:now.toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})});
+  saveLocal('diary', diaryEntries);
+  document.getElementById('diary-ta').value='';
+  renderDiary();
+  toast('Entrada guardada en tu dispositivo 📖');
+}
+
+function renderDiary(){
+  const el=document.getElementById('diary-entries');
+  if(!el)return;
+  if(diaryEntries.length===0){el.innerHTML='<p style="font-size:.85rem;color:var(--light);text-align:center;padding:2rem">Aquí aparecerán tus entradas 🌿</p>';return;}
+  el.innerHTML=diaryEntries.map(e=>`
+    <div class="diary-entry">
+      <div class="de-header"><div class="de-week">Semana ${e.week}</div><div class="de-date">${e.date}</div></div>
+      <div class="de-text">${sanitize(e.text).replace(/\n/g,'<br>')}</div>
+      <div class="de-fruit">${e.fruit} <span style="font-size:.78rem;color:var(--light)">${e.fruitName}</span></div>
+    </div>`).join('');
+}
+
+function updateDiaryDate(){
+  const el=document.getElementById('diary-date');
+  if(el)el.textContent=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+}
+
+// ════════════════════════════════════
+// GLOSARIO
+// ════════════════════════════════════
+function renderGlosario(filter=''){
+  const el=document.getElementById('glosario-list');
+  if(!el)return;
+  const terms=filter?GLOSARIO_TERMS.filter(t=>t.w.toLowerCase().includes(filter.toLowerCase())||t.d.toLowerCase().includes(filter.toLowerCase())):GLOSARIO_TERMS;
+  el.innerHTML=terms.length?terms.map(t=>`
+    <div class="glosario-term">
+      <div class="gt-word">${t.w}</div>
+      <div class="gt-def">${t.d}</div>
+    </div>`).join(''):'<p style="color:var(--light);font-size:.85rem">No se encontraron resultados</p>';
+}
+
+function filterGlosario(v){renderGlosario(v)}
+
+// ════════════════════════════════════
+// POSTPARTO
+// ════════════════════════════════════
+function showPP(section){
+  ['mama','bebe','lactancia'].forEach(s=>{
+    const el=document.getElementById('pp-'+s);
+    if(el)el.style.display=s===section?'block':'none';
+  });
+  document.querySelectorAll('.ppnav').forEach((b,i)=>{
+    const ss=['mama','bebe','lactancia'];
+    b.classList.toggle('active',ss[i]===section);
+  });
+}
+
+// ════════════════════════════════════
+// BIENVENIDA + PDF EMBEBIDO
+// ════════════════════════════════════
+const PDF_B64 = 'JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUiAvRjMgNCAwIFIgL0Y0IDUgMCBSIC9GNSA2IDAgUiAvRjYgNyAwIFIgCiAgL0Y3IDkgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMSAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EtQm9sZCAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjIgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iago0IDAgb2JqCjw8Ci9CYXNlRm9udCAvWmFwZkRpbmdiYXRzIC9OYW1lIC9GMyAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0Jhc2VGb250IC9UaW1lcy1Cb2xkSXRhbGljIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GNCAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjYgMCBvYmoKPDwKL0Jhc2VGb250IC9UaW1lcy1JdGFsaWMgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0Y1IC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNyAwIG9iago8PAovQmFzZUZvbnQgL1RpbWVzLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0Y2IC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKOCAwIG9iago8PAovQ29udGVudHMgMTQgMCBSIC9NZWRpYUJveCBbIDAgMCA1OTUuMjc1NiA4NDEuODg5OCBdIC9QYXJlbnQgMTMgMCBSIC9SZXNvdXJjZXMgPDwKL0ZvbnQgMSAwIFIgL1Byb2NTZXQgWyAvUERGIC9UZXh0IC9JbWFnZUIgL0ltYWdlQyAvSW1hZ2VJIF0KPj4gL1JvdGF0ZSAwIC9UcmFucyA8PAoKPj4gCiAgL1R5cGUgL1BhZ2UKPj4KZW5kb2JqCjkgMCBvYmoKPDwKL0Jhc2VGb250IC9TeW1ib2wgL05hbWUgL0Y3IC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKMTAgMCBvYmoKPDwKL0NvbnRlbnRzIDE1IDAgUiAvTWVkaWFCb3ggWyAwIDAgNTk1LjI3NTYgODQxLjg4OTggXSAvUGFyZW50IDEzIDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iagoxMSAwIG9iago8PAovUGFnZU1vZGUgL1VzZU5vbmUgL1BhZ2VzIDEzIDAgUiAvVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKMTIgMCBvYmoKPDwKL0F1dGhvciAoQXl1ZGFudGUgQW5cMzYzbmltbykgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDMxMDE1MTcxMSswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDMxMDE1MTcxMSswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoTWFtXDM0MVByaW1lcmEgXDIwNCBQcmVzZW50YWNpXDM2M24pIC9UcmFwcGVkIC9GYWxzZQo+PgplbmRvYmoKMTMgMCBvYmoKPDwKL0NvdW50IDIgL0tpZHMgWyA4IDAgUiAxMCAwIFIgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCjE0IDAgb2JqCjw8Ci9GaWx0ZXIgWyAvQVNDSUk4NURlY29kZSAvRmxhdGVEZWNvZGUgXSAvTGVuZ3RoIDM4NjQKPj4Kc3RyZWFtCkdiISNeOTlcLz4mXGNTcF5yOTptQjgsODghMm4/M0AzbUAqPiYsTS03MkxqIT8uNmI5N2pRLThyVGhvQU9zJTdqU0RCSU5ZLWdwTiEhRjNJMl0/JF4qaDRxWlREUUMwL0tsZSFqRFdwcV8/RioiJyFBL1dsWl9GN0hNKGpnTFIodD5CYyswJSZJSVBDSlNsdGYqOS9YcDwlNV9sLD8sI1EnMVxNJzxPTGk9RG5Bb28+WUQybDpwLSNzUFUtcU04ZTFNSlFrPDcvXG4ucUFVdT0rTmI0Yz9mTl1MbUlrOXU8OzZgVm5DVzYjVEAuIk4ncz4sWWhtMWM+Zi9YVmclR2lMXi5BczReVSFdSDo0YWhsYG9DPlQtMUE1VTNXPyw4ZEksbiEwNT86aTdQO191TSQqN1NEQjJgTSdGbkxzc0A9RmNkaCg5bl1mTCU7MSpZUj1VTWciIW5BbD1ZYFJAJHRLa1cxZ3VzISxgU0tlWmAjNz1CUF1Pc1Q1JGgoKz1rcyQ9TmRYXGU3YiIvQzQwZCFkRTlUPVdQUV5gMyNfRl5SUThSQD90SkxMajRdJUBFYl9fX2hURDtALGlNWy1rcS9NdSg9YWtVYGA8KDdrWkxYLlttO08qRl1xXDw9P2c7aCVhPDFeK0hwbmFxYzRBYllwUEM1TmNlX0lRVmFCJDwlIjRUPjdLI1UpRUduWGxVSXNlPlc2PVE4S1k/KFsrP09NZnJvbHNwI0hIUzo4IVpHJSlEJFQ2ZVhkQ2U5PW9HPjJUTWsxTS8xNStqLEJoLEZzQTBVZTRWR2k+U0RfcEQyaTNIaCZlaF5RQSthN2c8LkhNZHEjQGkwdCUlO05jbjwiJ0QvYVYlSjojUiJRY0gsQDViaURFZ18zWUZCIWoybFJsTSZlLkhTY2w+JkM7WXRTRCFsJkRXRlEvJ1ttbiRQdUdOZ0tDRSM9WFBFZnQ/KlZiUiJsSTdgLTpoc1M6aT1ePzBoPm9lS2kkTi5eZWRqYzE/cFooIUNfIyI5Xi4xRSwpVm1WXE5DbClWZUVwS1UmUDIqLENWUk5MZ1VXS0h1PGssQUFKNzYhJlA6M2JONjZVI08lLj9wY1dsYF5hOW0xWUhhT1JLazlqMlsiXFoubmA9Vl1cW09BQCZUS0VxY0pBLC0jMjhcOUR1ZVU/dGJXNXJsVlxMYiRxUEFbOC86Im4tN0NrXCgzUnJITGBBMlpkbTFZKlpiRS9oOyVWRS5ob25DcEwkW1NXbTMpZDonJUZAZCtxXmJZMC8hI0xUOmkuMmVZXzBLME5TUk5fKlRyQ1FIOGRxZydMLz0oLj1ANCsxP19AQ3M0ZTMiKDtPYUIxLXA/Jl8kbTk+ZSRXdFRPL25icnAjSFxPKDIvcEM5WTQiQmxZbl9zOlhBYlMnJmREWj1jRlgwa2xsNU5oajQ0IXUycHBGWkUmPGhmTmNLInRqcTowJzVWYlhBRVZWdUQjNHF0SyElbCQ6MjdwbioidVY4NEJqIjMsKXBHQWUpQWBPVD5eTUYuZ1diTT8rNWAwKD02L1pDcUVAdTJzN0F0c0dRSjAiMEdvVz8iJlAkPGhEXG1cI2M7XjxWLCtzcSs4Mj4manM0bGVTPj8vYE9CRkcvQklEUkFaWFI1cDIjKz9YRVkodWM2SC1gUV9HZThqLU4lakg3PEBKYixTQVJTXzJxOy1ZaSM5bkVxL1RKLTBdOztJYFhnPCpLVjJtcDpzbjxvP2BFUWRNQS5YMF1dQWFKLnRSLj9NbzVeYW1ZK3FDTU5GQDAsP2YkOXBLcHVMMVlXcCQ7RkFyWkU/LTssKzBPZVhOP2ZXOjkkRyI+RUlbKDJaOS4pXnAuSD1aP1xuNCdrcUdzPmpoKC9qcT9wRWghVDUjVWE5NSVxNTI2K0YrIkZYZFA+YipiaGdBTCRCJVxBUUpBc1pFRlQpLzI+RktSanRlRGZPWTZUO2srSFBBT2ZVKlc2YEFnOSNwNXQ5O2FGZV9wXHRMSytRYHRwI1M5YlpCPE5UUCFfVyMucTx0ZWc+KClUOVJ0RiFKPiIyQSRyVzNIKjhuKStHbWgoI0BecTomMkszYScxS08yVy1IaV9ZTVF1O2UkM1ErcFAxMTgvXVxGZ2NEMmEuXDxJPyhVYEgrYV8lVVVRMzJvTzlIP0ArSDxxT3I8RHImdXBZcXMwWVs5JmFkUEJlLGA8XitLc2tBZmpCRmg2MDtmUDRyTk8tcV5PKzI9TlU3J0QtOWhgSjMwKkIhKjpFYTg7NTdFaTtxKjItYz5XOSMzaHBzazcvJlYqP14lPUxDLkopJnVnRGdqLnAqWj1MS1RGXmFvTlU+XDQtNj9oITZWUE5lXzNsKDloYzpFdEBCSycvIjFwcm0uU2skODlYTEkxYmUrSFpLIl9wPiJmNSJrIWBIZj0tYShkQHUoYC8yVmRXXCYyZztBPCMkNjJGdDE0QSM9U0spO1NabigyTDdzNz5tZ28nNC1lZkMuUnQ1USUydSpcPysvKShyPjBdZCtVZDFDLykqXE0jbDY2Tko1R2c8M1YrMlplMFZAZm0jKyVhbnEwYzYqMmwwN3MsVDhjMTRZKFw0VmBvOE9Vck4ySWpgYkJFaUUpZzhVKi1wQDpgUiRcclxGYEskSEdHTl1fX1tDZUhZXDUrO2RoJ2REWEctUDE8ZDo9ckgqRFg4ZDJKJVsjLXNZQF9NKCY+R1kkTG06YkpTa2p0SHQ3LyRSLE5jUSZnSE4lMmkyazcvLmQlI05nI3BuMGlIKS5KTEVAWT5TbVRdJGcvcEVOdSFqUChBSUMqM2xdJl1fQVpmczJFYyUyXEMqU1Y3NTFpLU9Ma2xSPm8saW4xP2daSlYyXihpRWxvJSlDYGddKjtgRjVDKlUuayYkRXRtJHNgWUVyamU2K3BYIm9kTyVFdDIpc19wSERLczMhWDxsbjBXKGFGI1R1WDJKNEpoTmtKc1pWLDhOZm5LaGZXZWtpK0pkS2ZEWTQ+OVdwWVZxW0VpQiZEUTVlOy1qRjBMc15YVGd0PShrIlE9N2lULEcjajBpLGIiPU5xKlJoaCorQlcmZUlgSD4rJ0ZiWCwxK2RGNjFtcikkcCZZYysiTUddIVcvW0trbkRYLjU2JTV0KGhacl9jdCouTz4pY19oL0ItdSdPMUEoXW1VMj0tQVdASzUnTXExIiw2ZXJYNi9SIT4iRDdYYSJoWTA9QTo5JUdUWjRZOGkzXVkrImQ1PGtiaSRqYk5dRjlVO1NedFBaSWQsO1ZbTzhnaVMvb1UmSSgjXlFXQ2tAIlZILkNiWVk3QG50O2ZqUFYxQ2FZUnFgZWtgUEBtKnFSJDYsY0RqW2FFZ21OMF8lRGI+a2xqQCFhaiYrTUFlRidacFhSLTxxNDtUdCNAO2kpTCEvSD5XQVchR1dUO0RUQ0RmcnFpYzM2bCMzUDVWVUhYM0ZBOzkrPiZJNkhPdUI6RDNxcVQzLUFbcTRBPlRUQ25ZbklcVUlucV5MUUZ0VHFQT046XTVUZUdgOzluQWVXWmpLKTJPJz9cPFI+VDw7LFVmKDY9Oi5kTzEyWEhxOkJvK0Ejamczc1BnSSheSj5sSnFpO24jU18xIjA9TkBRQFoqWDEiUiJlSVIrX2Ewc28kbjlva11vJUY+amBAVFBIZEFUJTFKcjIhaFI9YzRsN1ZJYiMwPlVhRClVVl8nKC0mTiJCIUBbVWQsUiUuR0EoYCgxJEolakJMOiM2dSFDanJiUW0nKTYkMmleQyFGa29fPCQmPDA0MEFzNGBnQz5NLWE7W10jcEJlKERkWVxpZCM5Vi8qUWYzTjspRFgnZD0nQV4taWVCRiQtSD1lY0Mzck4maiNUMDNRU0JyRmJtMTxPMHFvOkFINztNbTc2MkdPXlsxaFBDbEZrYi5zSjljY1lrO3NKJmZZJltjNj42NmRkR2Y5Z086dCQ6bls8QG5EUjdAKzUnSlZ1cG85JStZZEplZFlMPEVdbmIlPkVUMk5uJS9OX1k9QCxbPEgsXC86K2xEZkppWSxEJGhrVGpuYmJiYFUvK29uI3IjYlc6MkNxbi5cSnBAW2U+aDVhXWhpRzQ8UmJIX2RsQ3EicnJKJ0NmZzBZSlhFUltyVzUvSW9YVWRkW1YmZD1iPz5TV1NOYj9LKSktSEZvXWEuPyErO3VdRUMqVVRbOiZeZ1ovOWpROzJwZihQSEY/LzFkVmJdSnMzMSFOPllYdChUVi87NSMvI3QwU3BVN2sjSXNmSWs6SClNYVNbWmVvOTthUzdhbDFSMkNGViMyMFxhUklWWTczRVtRMzQvajA5OGpDViFuYzo3OElZTkVXN1dZNGI5MzYrMjtWPEJvKCVZMzcnOiIrUVIlMEhqUTJNVzMyYkJzaDZaTVcyY1Zycl1JITo7O0wwcilNN1BTND9nUUk9SFshOk1CYEtvblBhZlxaVkVAbGldLk9wdUIoQEorL14wPSxjaWtPOzlJQiZyWVlMclosbnVuR09hUXJvKlh0YzReLWVmLlxcKTs7YDZNXzR0PSJSLjYvb150MTFBW2ZYPkhyTTRKbD82UGgrZmM2VlpCamwjL04pczJcbU5yKztNbW8yYUk/dT4lP1xhSlBuPlQ/ck8yYE86IjVsYDwiJzlnNj1KdHFjcXJCVVJePEYvUVhXMG1LaXJrSmxEVSJNVys9bzNcUFQzJ14jRGRtXl4obSktQz5SczNDW2tGRSVLMlJQJFd1PzBOb000MnBBJjFTQzs6QnUtWSE2TXA5YFU/Il1RLV40UFJ1OHEvLFJ0UEQ/dT9eJWNpXClcJVBkRCo1NjVhX2I5VT9LN3BZWHNRJDpEPVcnWW0naG9CX01lVkI6SkppKV5sdWd0aCRkKGlrNzlgZCsoZ1dfP0tFL3RTcmBVZSgraTxZbnUnYVlScik+bm5PJ2dBVl5NOVJCQlNiQWYmOiwpS20qXkxAaHFqZDsrUTQ4cnQqLV8+UCVxZ191I2FeNy9kIktMc0NlTS9MKmphcEZRdGVqNiVeKSFCZzhvUz5VLEAuNXFlUStgcGxHIlFLJVlCPmlgOSUwUitwJ0xhLDVaP1staGgxU1ZoSzNqRTczNURRaykmNFJQUWdUaXNxNDpILmg7L09DMm9mRUlZOTchSCpzUkk6JmN+PmVuZHN0cmVhbQplbmRvYmoKMTUgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMjQzNQo+PgpzdHJlYW0KR2IhI10+QXI3UydSbkIzMyNHSTdtOC9nZU1MNHMjVlRbP0BDJy9oKU1kZTM5PGEwU2o0KT1UVkc9WTtpJ08sYkdmdGhEWzJLX1FecWAsYEkicic7R3MuKGJCSVtSdUlRT0ZeZGFYbzI8LFlbKDFYMyclXTFLTWdZUTNdaWwiUFFcSEtUYGpqUE1OLkg0M1FEMTotZjRtT15FLDg3MDlxT2NBND5fOElOSGQqR0wpXl9ZbjdOPWhTWkxEZSRacWZOMU9ocFZqJTdWR09ITzoyLWRyXWlGaV45ZDFrUWFwcyk9QnJENlEzKV5gLEBbKCQ/bDxSTEcyXT9qalJyVmFRcCxyQVpeNnRuSkY7RTJvX3JOSjxdUHFdZF5lYC4yI3RkMWRbX3BLQERDI0M0L0ZYSHI2bUhZLGAwIzEmcmNCVDghWjk4WF81KSxoQWE9MCRqcz5ELVJsSlRTVSldRFk3dHVnKmZzZ05sbFYlOkhVMSJiWS1TITpaLCttTD9oYUxIKFloWDAwI1ldPUMyYmhqTGJpMlZkQ2teZkRfIWduailDTkxQM20zR1dLXU1HSy5DJ3ViIllVJlQ6QEZ1dTUwa0NvQCd0YS5bRiFuc1NhVU1zO2Npc15VVy4hUEMkJzVvWFMyTkBZV1RWJjRzalhmQm5CPnNSVjBhb2U8cVE5biNSWWlsKCxkQUkwVE43bTYmWFYqRjlCTiNbWSpgZDcicS1tWD5yVUldJUQ7bFFqKFhNQT5BNExZVlwzWSImOm8nRWdQM01fPFRmZzkhYXJARl47IWFgK1t1WTxHRXMuYW40aE9qLUheUkA+aSJyLFw9OmNFbyhcbC9zbjhnWz9FZEY+WFI6Ol9CJXAsMDsiImhsWDUlMSZhOTZyc00sTzVTVHQpXU1LUEUkLGZ0PS5lcmY4TiFUNDVfXDxIOSlJOlRyTiknTGVFSi0jWmwqTzYiKzFpcygvJ29DWiRCPyMrQF1wN0I3aCNMaDxKUSsiTDRET2g2YmxQZkAlOjpxaWFgPUk8WC50N1ZYcCJITEkiPC1qJ2NvLSMqMTYiJ0s9bVpnRiJbQCwwPys+WWYkM0FFWSc/LWQ/MS40KSJcWixLNXA9PSFcU3EsJG8uJmNGNVZwKGBaak9obE1UMG9cQEItSjMjWyFNX0s0LD9QYE1RO2lVV3FbJTl0Kk9XNSpCQz5pKktRRCdkKmQ+cE1sKilES2AiX2Y+L0crKUo4I2BFc2hDMFBOS0stbjMmZTA1JlVLT3VqKkk8ST9TdWN0XyNFOV10WVxIUTdiQFdlJHIxTVwtVWtjOz9QaT1pKSc9JmNPTz5vaW9aISdFJVktWkVuMTgyVlZVcVBYKVdMRVJQXV80NTUwKmA3TWZYNiJMLTdxTjwhIVNrUHBATilgRUBiaSMiSmBXXCRtUGA9WzYrdFRWNlpCTChmcS4lQk9NWVJOQU5ZaT8/KDN0YT8lJ0ckZkVxRHFtW0BCbixbNSJUTE1MKT9hXDJBcVtFTVZPTlUqZy1TO1kxODc7QCUsci1RZ0FHUzQkWDNpMHIrcVBXajRXJ0ZpPDw2PVU+XSomLUBMPVdDKV88aUAxMWszPD5UOT48RlJoTFElZSlbWE8rJ0ckZz0kWktHRy1PZjFcMGtBK1hEMXVoPD1pPUl1T2ViSmc6NyNIXTZBYWVaODI8SiY4cElcZmlgO0gnTjheOWVMK28mNVhiMk9cOT9VPUFVZzpuMS00RDlJJlMrYWw9dDJsU3E6MiVbPyFrXEFuNF81JWU9U1hoNnE8P1smdUJfVGYwNy4qR2ZxcEgvO25KN0hKK3BzI21YME0iYG1yWDFEa0o1bFxsK0Q0V0tcLSVOOFlEXGEtQStpOzlIQz1nR21fKCE6N3FKXXE3ciJiUiVfYyhIQGU8cidlIlJtQTFXSCdRbFpAKm9JIW5mVTdkRkc9SVtSUilUUiZZV15ZUi9bT1xdNlpFLU44QkxHWS0lcEVtbk81PT9NLHA/KikpUiNONkQvOjlkMUVhUCYyJG4/bzFHRFF1RjA7MVlRPXFzJkVQY2okTFopIyxDLXNpKSg+LitLQ3BzaDxrYFZVbFcuRSgjOzs8cGhqSWVgTSRTZGhpYCdKcChaXmopcWQ5Q2g9N15CNGhqR3FsNkJiZlNMWG1CW0A5a25SZ110STUqX2YrOmRJSSRHcDVRSVRuNmJHJjR0UT1cX1w7VVcubT9NSFZ1IWE7LC5bVUtoPWVKYDhiPUhXZiUwV0lIJ1EqJl5CXTlTU1ZRaWFVISRAbz9lIlo4TVooMlIhcVpyWCVOYVBPKVsmIS1ydE9FLzQxNUdNTDpPTyVjZD1CMCUrV2lWZy8tbyltbTNrP2o2Vz4tTTdCSC83WWIyP0FJZyo2cjYvXmFXaSRJWGhiTW0vPygxbFYkNGYhQWducUcrJ01wb09pPU83K2VFbT02IilkX2JvWWM7X2hbb3ROOFo2Oj03SkNqJ2xYXmcuRTM8Q0ZhXWpxKzkpYGNxI1lcRlRjUz4xUj4rL0xaXlZObSE9PTRmSWJtK1xAJ2tdZik6IjU0OGxKJ1VbS2U0LzI5ZHJXKUlPRnFXOnJGQmtgK0NgOzsvdEZWMTdabWBRXjheVVVQS0BTQ2shT2hbczkrQjNWW0JgYFRndHFNO19zIj87RkcsQnA8RyhxIT9YSFAiXjlOOD1sOCFhLVombllZcSxXPlg0SDYnTlc9PypQODY4S3EmQF9MQGxeb2FZczxeJzhTSTZfbz9uJlRCVEAqV3VcTm5lamc4NyVEaztAQjZWL3B0U0JZQCQvRGJySyVoJmVpb15pYD06aGdJcmI8IjZXLTddRzUnYlpXZEVfKHEiSGRPbCMsUHUzPGtWXGRbSSVrKSE6JzZtQSxrYVpLTz84aCI/Ki4+YUY7bVhQQFRYUmosaWhiUjlkYzhIRiduNkpQQmlmKk5jS0JhWSdUX0NGNGVbIUFudC87JzNTLlFyYCwiXzF1WEdJSkx0ZiNQMXMlXHNcX2hxc0lqbEcyclFraENEITQ2KThUcyFmSGRkcC1CNkBcLlZyM05JPSltU0pYOWlaW2ZRMT5MUztpS3NZJTxbIW8nNTBPajBEKTovQC1UJ0xAVSYhdF0+UkY+LDQ4L1MoRyh0JSYnUFMmYCI/VG9PPz85J21JL2VAcHI+PDpxclAmOGIhLiVoYEc2ZV9KZis3ODRaQCpuLi9GbUIrM0sqVWFmPDBZMUlmXDY6O19cfj5lbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCAxNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwNjEgMDAwMDAgbiAKMDAwMDAwMDE1NSAwMDAwMCBuIAowMDAwMDAwMjYyIDAwMDAwIG4gCjAwMDAwMDAzNzQgMDAwMDAgbiAKMDAwMDAwMDQ1NyAwMDAwMCBuIAowMDAwMDAwNTcxIDAwMDAwIG4gCjAwMDAwMDA2ODEgMDAwMDAgbiAKMDAwMDAwMDc4OSAwMDAwMCBuIAowMDAwMDAwOTk0IDAwMDAwIG4gCjAwMDAwMDEwNzEgMDAwMDAgbiAKMDAwMDAwMTI3NyAwMDAwMCBuIAowMDAwMDAxMzQ3IDAwMDAwIG4gCjAwMDAwMDE2NTYgMDAwMDAgbiAKMDAwMDAwMTcyMyAwMDAwMCBuIAowMDAwMDA1Njc5IDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDc4MjIwOTliMDQ3MDk2ZTZkNjJmYWU3NmU1ZTI0Nzc4Pjw3ODIyMDk5YjA0NzA5NmU2ZDYyZmFlNzZlNWUyNDc3OD5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChvcGVuc291cmNlKQoKL0luZm8gMTIgMCBSCi9Sb290IDExIDAgUgovU2l6ZSAxNgo+PgpzdGFydHhyZWYKODIwNgolJUVPRgo=';
+
+function downloadPDF() {
+  const bin = atob(PDF_B64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const blob = new Blob([bytes], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'MamaPrimera_Presentacion.pdf';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadAndUnlock() {
+  downloadPDF();
+  setTimeout(() => {
+    const btn = document.getElementById('welcome-enter-btn');
+    const note = document.getElementById('welcome-note');
+    const dlBtn = document.getElementById('welcome-dl-btn');
+    if (btn) btn.classList.add('visible');
+    if (note) note.textContent = '✅ PDF descargado — ya puedes entrar a la app';
+    if (dlBtn) dlBtn.style.background = 'var(--sage)';
+    if (dlBtn) dlBtn.innerHTML = '✅ Carta descargada';
+  }, 1200);
+}
+
+function enterApp() {
+  const overlay = document.getElementById('welcome-overlay');
+  if (overlay) {
+    overlay.style.animation = 'fadeOut .3s ease forwards';
+    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+  }
+  saveLocal('welcomed', true);
+}
+
+function openHelp() {
+  document.getElementById('help-panel-bg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeHelp() {
+  document.getElementById('help-panel-bg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── FAQ DATA ──
+const FAQ = [
+  {
+    q: '¿Es completamente gratuita?',
+    a: 'Sí, al 100% y para siempre. No hay versión de pago, no hay funciones bloqueadas, no hay suscripción. Todas las secciones están disponibles desde el primer momento sin coste alguno.'
+  },
+  {
+    q: '¿Guarda algún dato mío?',
+    a: 'No. MamáPrimera no tiene servidor propio, no usa base de datos y no envía ningún dato a ningún sitio. Lo que escribes en el diario, tu peso o tus registros se guardan únicamente en tu propio dispositivo (en el almacenamiento local del navegador). Si borras el historial del navegador o cambias de dispositivo, esos datos desaparecen.'
+  },
+  {
+    q: '¿Cómo instalarla en mi móvil como app?',
+    a: '<strong>En Android (Chrome):</strong> Toca los tres puntos ⋮ arriba a la derecha → "Añadir a pantalla de inicio" → "Añadir". Ya aparece el icono en tu pantalla de inicio.<br><br><strong>En iPhone/iPad (Safari):</strong> Toca el botón Compartir (□↑) en la barra inferior → "Añadir a pantalla de inicio" → "Añadir".<br><br>Una vez instalada se abre a pantalla completa, sin barra del navegador, como cualquier app normal.'
+  },
+  {
+    q: '¿Funciona sin internet?',
+    a: 'Sí. Una vez que la has abierto por primera vez (o instalado como app), funciona completamente sin conexión. Toda la información, Luna, los testimonios y las herramientas están dentro del archivo. No necesita descargar nada del exterior.'
+  },
+  {
+    q: '¿Qué es Luna y cómo funciona?',
+    a: 'Luna es el sistema de preguntas y respuestas de MamáPrimera. No es una IA generativa — no envía nada a ningún servidor externo. Funciona con una base de conocimiento médico redactada con fuentes del Ministerio de Sanidad, la OMS y la SEGO. Busca la pregunta más parecida a lo que escribes y muestra la respuesta correspondiente. Si no encuentra respuesta, te redirige al SITE del Ministerio (91 822 24 36).'
+  },
+  {
+    q: '¿Las historias de mamás son reales?',
+    a: 'Son relatos inspirados en experiencias ampliamente documentadas de mujeres embarazadas. Los nombres y datos identificativos son ficticios para proteger la privacidad. El objetivo es que ninguna mamá primeriza se sienta sola ante situaciones frecuentes como las náuseas, el miedo en el primer trimestre, la lactancia o el baby blues.'
+  },
+  {
+    q: '¿La información médica es fiable?',
+    a: 'Toda la información de MamáPrimera está basada en la Guía de Práctica Clínica del Ministerio de Sanidad español, la OMS y la SEGO (Sociedad Española de Ginecología y Obstetricia). Aun así, es información orientativa general — no sustituye la consulta con tu ginecólogo o matrona, que conocen tu caso concreto.'
+  },
+  {
+    q: '¿Puedo usarla en el ordenador también?',
+    a: 'Sí. MamáPrimera es una app web que funciona en cualquier navegador moderno — Chrome, Safari, Firefox, Edge — tanto en móvil como en tablet u ordenador. Está optimizada para móvil pero se adapta a cualquier tamaño de pantalla.'
+  },
+  {
+    q: '¿Dónde se guardan mi diario y mis registros?',
+    a: 'En el almacenamiento local (localStorage) de tu propio navegador. Nadie más tiene acceso a esos datos. Se mantienen entre sesiones — es decir, si cierras la app y la vuelves a abrir, tus entradas siguen ahí. Si instalas la app en otro dispositivo o cambias de navegador, los datos no se sincronizan (no hay servidor que los guarde).'
+  },
+  {
+    q: '¿Tiene publicidad?',
+    a: 'No. Ningún anuncio, ningún banner, ninguna marca que pague por aparecer. MamáPrimera no tiene modelo de negocio publicitario.'
+  },
+  {
+    q: '¿Qué hago si tengo una urgencia médica?',
+    a: 'Llama al 112 de inmediato. También puedes llamar al SITE (Servicio de Información Telefónica para la Embarazada del Ministerio de Sanidad): 91 822 24 36. MamáPrimera no es un servicio médico de urgencias — ante cualquier síntoma que te preocupe, siempre al hospital o a tu médico.'
+  },
+  {
+    q: '¿Cómo actualizo la app?',
+    a: 'Al ser un archivo HTML autocontenido, las actualizaciones se publican como una nueva versión del archivo. Si la tienes instalada desde una URL (Vercel, GitHub Pages), el navegador la actualizará automáticamente la próxima vez que tengas conexión. Si la tienes como archivo local, deberás sustituirlo por la versión nueva.'
+  },
+];
+
+function renderFAQ() {
+  const c = document.getElementById('faq-container');
+  if (!c) return;
+  c.innerHTML = FAQ.map((item, i) => `
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(${i})">
+        <span>${item.q}</span>
+        <span class="faq-arrow" id="arrow-${i}">▼</span>
+      </button>
+      <div class="faq-a" id="faq-${i}">${item.a}</div>
+    </div>
+  `).join('');
+}
+
+function toggleFAQ(i) {
+  const a = document.getElementById('faq-' + i);
+  const arr = document.getElementById('arrow-' + i);
+  const isOpen = a.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-a').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.faq-arrow').forEach(el => el.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) { a.classList.add('open'); arr.classList.add('open'); }
+}
+
+
+// ════════════════════════════════════
+// ALMACENAMIENTO LOCAL EN EL DISPOSITIVO
+// Todo se guarda solo en el dispositivo de la usuaria.
+// Nunca sale del dispositivo. Ni un byte.
+// ════════════════════════════════════
+function saveLocal(key, data) {
+  try { localStorage.setItem('mp_'+key, JSON.stringify(data)); } catch(e) {}
+}
+function loadLocal(key, fallback=[]) {
+  try {
+    const d = localStorage.getItem('mp_'+key);
+    return d ? JSON.parse(d) : fallback;
+  } catch(e) { return fallback; }
+}
+// Fuentes: Ministerio de Sanidad GPC Embarazo, OMS, SEGO, Guía de Cuidados INGESA
+// ════════════════════════════════════
+const KB = [
+  // ── SÍNTOMAS 1ER TRIMESTRE ──
+  {tags:['náuseas','vómitos','mareos','arcadas','primer trimestre','semana 6','semana 8','semana 10','mañanas'],
+   q:'¿Son normales las náuseas y vómitos en el embarazo?',
+   a:`Las náuseas y vómitos son uno de los síntomas más frecuentes del embarazo: afectan al 70–80% de las mujeres. Suelen comenzar entre las semanas 4–6, alcanzan su máximo alrededor de la semana 9 y mejoran en la mayoría de los casos antes de la semana 14–16.\n\n**Consejos basados en la GPC del Ministerio de Sanidad:**\n• Come en pequeñas cantidades y con frecuencia (5–6 veces al día)\n• Evita el estómago vacío — ten galletas saladas en la mesilla\n• Las comidas frías o a temperatura ambiente se toleran mejor que las calientes\n• Evita olores fuertes y alimentos grasos o muy condimentados\n• El jengibre (infusión suave) puede ayudar según estudios\n• Descansa y evita el estrés\n\n⚠️ **Consulta a tu médico si** los vómitos son tan intensos que no puedes retener ningún alimento ni líquido durante más de 24 h (posible hiperemesis gravídica), pierdes más del 5% de tu peso, o notas signos de deshidratación (orina muy oscura, mareos intensos).`,
+   source:'GPC Ministerio de Sanidad · INGESA Guía de Cuidados'},
+
+  // ── CANSANCIO ──
+  {tags:['cansancio','fatiga','agotamiento','dormir','sueño','primer trimestre'],
+   q:'Tengo mucho cansancio, ¿es normal?',
+   a:`El agotamiento intenso en el primer trimestre es completamente normal y muy frecuente. Se debe principalmente al aumento brusco de progesterona, al esfuerzo que hace tu cuerpo formando la placenta y al incremento del volumen sanguíneo.\n\n**Qué puedes hacer:**\n• Duerme todo lo que necesites — no es vagancia, es biología\n• Descansa cuando puedas durante el día aunque sea 20 minutos\n• Mantén una alimentación equilibrada con hierro suficiente (la anemia agrava el cansancio)\n• Bebe suficiente agua\n• Delega tareas en casa\n\nSuele mejorar notablemente al entrar en el segundo trimestre (semana 14). Si el cansancio es muy intenso o va acompañado de palidez, palpitaciones o dificultad para respirar, coméntalo con tu matrona para descartar anemia.`,
+   source:'GPC Ministerio de Sanidad · INGESA'},
+
+  // ── PESO ──
+  {tags:['peso','engordar','kilos','ganar peso','IMC','obesidad','sobrepeso'],
+   q:'¿Cuánto peso debo ganar durante el embarazo?',
+   a:`La ganancia de peso recomendada depende de tu peso antes del embarazo (IMC previo):\n\n• **IMC < 18,5 (bajo peso):** 12,5 – 18 kg\n• **IMC 18,5–24,9 (normal):** 11,5 – 16 kg\n• **IMC 25–29,9 (sobrepeso):** 7 – 11,5 kg\n• **IMC ≥ 30 (obesidad):** 5 – 9 kg\n\n**Distribución aproximada a lo largo del embarazo:**\n• 1er trimestre: 1–2 kg en total\n• 2.º y 3.er trimestre: unos 400–500 g por semana\n\nEstos kilos se reparten entre el bebé (~3,4 kg), la placenta (~0,7 kg), el líquido amniótico (~0,8 kg), el aumento del útero y los pechos, y las reservas de grasa materna.\n\nNo es necesario "comer por dos" — el aumento calórico real es de unas 300 kcal/día en el segundo trimestre. La calidad de la dieta importa más que la cantidad.\n\n⚠️ Si pierdes peso de forma significativa en el 1er trimestre por vómitos, o si ganas mucho peso de golpe en el 3er trimestre, coméntalo con tu matrona.`,
+   source:'GPC Ministerio de Sanidad · OMS'},
+
+  // ── EJERCICIO ──
+  {tags:['ejercicio','deporte','actividad física','nadar','caminar','yoga','pilates','correr','gym'],
+   q:'¿Puedo hacer ejercicio durante el embarazo?',
+   a:`Sí, el ejercicio moderado es beneficioso y recomendado durante un embarazo de bajo riesgo. Según la GPC del Ministerio de Sanidad, reduce el riesgo de diabetes gestacional, preeclampsia, dolor lumbar y mejora el bienestar emocional.\n\n**Ejercicios recomendados:**\n• Caminar: la más accesible y segura durante todo el embarazo\n• Natación y aquagym prenatal: ideal, no impacto\n• Yoga prenatal y pilates prenatal\n• Bicicleta estática (más segura que la convencional)\n\n**Ejercicios a evitar:**\n• Deportes de contacto o con riesgo de golpe abdominal\n• Deportes con riesgo de caída (esquí, equitación, ciclismo en montaña)\n• Buceo\n• Ejercicios tumbada boca arriba a partir del 2.º trimestre (comprime la vena cava)\n• Abdominales hiperpresivos\n• Deportes de alta intensidad si no los practicabas antes\n\n**Señales para parar y consultar:** dolor abdominal, sangrado, dificultad para respirar desproporcionada, mareos o palpitaciones.\n\nObjectivo: 150 minutos de actividad moderada a la semana, según la OMS.`,
+   source:'GPC Ministerio de Sanidad · OMS'},
+
+  // ── ECOGRAFÍA 12 SEMANAS ──
+  {tags:['ecografía','eco','12 semanas','translucencia nucal','primer trimestre','cribado','down'],
+   q:'¿Qué me harán en la ecografía del primer trimestre?',
+   a:`La primera ecografía se realiza entre las **semanas 11–14** y es una de las más importantes. En ella se valoran:\n\n• **Viabilidad:** confirma que el bebé está vivo y bien implantado en el útero\n• **Número de embriones:** detecta gemelaridad\n• **Datación:** mide el CRL (longitud cabeza-nalga) para confirmar las semanas de gestación con precisión\n• **Translucencia nucal (TN):** líquido en la nuca del bebé, indicador de riesgo de cromosomopatías\n• **Cribado combinado del 1er trimestre:** junto con un análisis de sangre (PAPP-A y β-hCG) calcula el riesgo de Síndrome de Down, Edwards y Patau\n\nSi el riesgo calculado es superior a 1/270, se te ofrecerá una prueba diagnóstica invasiva (amniocentesis o biopsia corial) para confirmarlo. Esta decisión es completamente voluntaria.`,
+   source:'GPC Ministerio de Sanidad · Protocolo SNS'},
+
+  // ── ECOGRAFÍA 20 SEMANAS ──
+  {tags:['ecografía morfológica','20 semanas','eco 20','malformaciones','morfológica','sexo bebé'],
+   q:'¿Qué me harán en la ecografía de las 20 semanas?',
+   a:`La ecografía morfológica es la más completa y se realiza entre las **semanas 18–22**. Según el protocolo del SNS, en ella se estudian:\n\n**Del bebé:**\n• Anatomía cerebral y columna vertebral\n• Cara (labio, paladar)\n• Corazón (las 4 cámaras y grandes vasos)\n• Abdomen (estómago, riñones, vejiga, pared abdominal)\n• Extremidades (huesos largos, manos y pies)\n• Genitales externos (y el sexo del bebé, si quieres saberlo)\n\n**De la gestación:**\n• Crecimiento fetal (biometría)\n• Localización y madurez de la placenta\n• Cantidad de líquido amniótico\n• Longitud del cuello uterino\n\nDetecta aproximadamente el **70% de las malformaciones mayores**. No detecta el 100%, lo cual es importante saber. Si algo no se ve bien, se repetirá o se derivará a un centro de referencia.`,
+   source:'Protocolo SNS · SEGO'},
+
+  // ── TEST O'SULLIVAN ──
+  {tags:['test sullivan','sullivan','diabetes gestacional','glucosa','azúcar','semana 24','semana 28','curva glucemia'],
+   q:'¿Qué es el test de O\'Sullivan y para qué sirve?',
+   a:`El test de O'Sullivan es la prueba de cribado de la **diabetes gestacional** y se realiza entre las **semanas 24–28** de embarazo (antes si tienes factores de riesgo).\n\n**¿Cómo funciona?**\n1. Bebes una solución con 50 g de glucosa (sin necesidad de ayuno previo)\n2. Exactamente una hora después te extraen sangre\n3. Si la glucemia es ≥ 140 mg/dL, el resultado se considera alterado\n\n**Si el resultado es alterado:**\nNo significa que tengas diabetes gestacional, solo que necesitas una prueba confirmatoria: la **curva de glucemia** (sobrecarga oral de glucosa con 100 g y extracciones a las 0, 1, 2 y 3 horas, con ayuno previo).\n\n**¿Por qué es importante?**\nLa diabetes gestacional sin tratar puede causar bebé macrosómico (grande), partos difíciles, hipoglucemia neonatal y mayor riesgo de diabetes tipo 2 en el futuro para madre e hijo. Con diagnóstico y control adecuado, el embarazo evoluciona con normalidad.`,
+   source:'GPC Ministerio de Sanidad · SEGO'},
+
+  // ── EPIDURAL ──
+  {tags:['epidural','analgesia','dolor parto','anestesia','sin epidural','parto natural'],
+   q:'¿Qué es la epidural y cómo funciona?',
+   a:`La epidural es el método de **analgesia más efectivo** para el dolor del parto y está disponible en todos los hospitales públicos españoles.\n\n**¿Cómo se pone?**\nEl anestesista coloca un catéter muy fino en el espacio epidural (entre dos vértebras de la zona lumbar). Por ese catéter se administra el analgésico de forma continua o a demanda. Tarda unos 10–15 minutos en hacer efecto.\n\n**¿Qué se siente?**\nReduce o elimina el dolor de las contracciones pero suele permitir sentir presión y movimiento. En muchos hospitales hay sistemas PCA que te permiten administrarte dosis adicionales tú misma.\n\n**Mitos desmontados:**\n• ❌ "Perjudica al bebé" — Los fármacos usados tienen mínima absorción fetal\n• ❌ "Alarga el parto" — Según la evidencia actual, no prolonga significativamente la dilatación\n• ❌ "Da dolor de espalda crónico" — No existe evidencia que lo sustente\n• ✅ Puede bajar un poco la tensión arterial (por eso te ponen suero antes)\n\n**¿Es obligatoria?** No. Tienes derecho a parir sin epidural si lo deseas. Puedes indicarlo en tu plan de parto. También puedes pedirla en cualquier momento del parto si cambias de opinión.`,
+   source:'GPC Ministerio de Sanidad · SEGO · Asociación El Parto es Nuestro'},
+
+  // ── URGENCIAS ──
+  {tags:['urgencias','hospital','cuándo ir','señales alarma','sangrado','peligro','emergencia'],
+   q:'¿Cuándo debo ir a urgencias durante el embarazo?',
+   a:`Debes ir a urgencias **de inmediato** ante cualquiera de estos síntomas:\n\n🔴 **Siempre urgente:**\n• Sangrado vaginal abundante (no manchado rosado leve)\n• Rotura de aguas (líquido claro, rosado o verdoso)\n• Contracciones regulares cada 5 minutos o menos antes de la semana 37\n• Ausencia de movimientos fetales durante más de 2 horas (si antes los notabas bien)\n• Dolor abdominal intenso y continuo (no contracciones rítmicas)\n• Fiebre superior a 38°C\n\n🟠 **Urgente, busca atención hoy:**\n• Dolor de cabeza muy intenso que no cede\n• Visión borrosa, ver "moscas" o destellos\n• Hinchazón repentina de manos, cara o pies\n• Ardor o dolor al orinar con fiebre\n• Picor generalizado intenso (especialmente nocturno)\n\n📞 **Recursos:**\n• Emergencias: **112**\n• SITE (Servicio de Información Telefónica para la Embarazada): **91 822 24 36**\n• Tu hospital de referencia (guarda el número)\n\nAnte la duda, siempre es mejor ir. Nunca es molestia consultar.`,
+   source:'GPC Ministerio de Sanidad · Guía de Cuidados INGESA'},
+
+  // ── SUPLEMENTOS ──
+  {tags:['suplementos','vitaminas','ácido fólico','hierro','yodo','vitamina d','omega 3','dha','pastillas'],
+   q:'¿Qué suplementos debo tomar durante el embarazo?',
+   a:`Según el protocolo del **Ministerio de Sanidad español**, los suplementos recomendados para todas las embarazadas son:\n\n💊 **Ácido fólico (400–800 mcg/día)**\nDesde al menos 4 semanas **antes** de quedarte embarazada hasta la semana 12. Previene defectos del tubo neural como la espina bífida. Si hay antecedentes familiares o tomas ciertos medicamentos, la dosis puede ser mayor (5 mg/día).\n\n💊 **Yodo (200 mcg/día)**\nDurante todo el embarazo y la lactancia. Esencial para el desarrollo del tiroides del bebé y su función cognitiva.\n\n💊 **Hierro**\nNo se recomienda de forma universal al inicio, pero sí cuando hay anemia o ferritina baja. Tu matrona lo valorará en las analíticas.\n\n💊 **Vitamina D**\nSe recomienda en mujeres con poca exposición solar o riesgo de deficiencia. Consulta con tu médico.\n\n💊 **DHA (omega-3)**\nApoyo al desarrollo cerebral y ocular del bebé. Recomendado especialmente si no comes pescado azul 2–3 veces por semana.\n\n⚠️ No tomes ningún suplemento sin consultarlo con tu matrona o ginecólogo. El exceso de ciertas vitaminas (como la A) puede ser perjudicial.`,
+   source:'GPC Ministerio de Sanidad · OMS'},
+
+  // ── LACTANCIA ──
+  {tags:['lactancia','pecho','mamar','leche','biberón','lactancia materna','artificial','amamantar'],
+   q:'¿Qué debo saber sobre la lactancia materna?',
+   a:`La **OMS y el Ministerio de Sanidad** recomiendan la lactancia materna exclusiva durante los primeros **6 meses** de vida, y complementada hasta los 2 años o más si madre e hijo lo desean.\n\n**Beneficios contrastados:**\n• Para el bebé: mejor inmunidad, menor riesgo de infecciones, alergias y obesidad\n• Para la madre: recuperación uterina más rápida, menor riesgo de cáncer de mama y ovario\n\n**Lo que nadie te cuenta:**\n• Las primeras semanas son las más difíciles — el agarre correcto se aprende\n• El dolor inicial es frecuente, pero un agarre correcto no debería doler más allá de los primeros días\n• La producción funciona por demanda: cuanto más mama el bebé, más leche produces\n• El calostro (primeros días) es suficiente para el recién nacido aunque parezca muy poca cantidad\n\n**Si tienes dificultades:**\n• Pide ayuda a tu matrona o a una consultora de lactancia certificada (IBCLC)\n• La app LactApp (gratuita, en español) es un recurso excelente\n\n**La lactancia artificial es igual de válida.** Si no puedes o no deseas dar el pecho, no hay ningún motivo para sentirte culpable. Un bebé bien alimentado es lo que importa.`,
+   source:'OMS · Ministerio de Sanidad · Estrategia de Atención al Parto Normal'},
+
+  // ── DORMIR POSTURA ──
+  {tags:['dormir','postura','boca arriba','lado','almohada','insomnio','descanso','sueño'],
+   q:'¿Cómo debo dormir durante el embarazo?',
+   a:`**Postura recomendada:** Decúbito lateral izquierdo — esto es, tumbada de lado sobre el lado izquierdo.\n\n**¿Por qué?** A partir del segundo trimestre, el útero tiene suficiente peso para comprimir la vena cava inferior cuando estás boca arriba, lo que puede reducir el retorno sanguíneo al corazón y producir mareos, bajada de tensión y menor aporte de sangre al bebé.\n\nEl lado izquierdo es preferible porque mejora la circulación renal y reduce la hinchazón de piernas y pies.\n\n**Trucos prácticos:**\n• Coloca una almohada larga entre las rodillas y otra bajo el vientre — reduce el dolor lumbar\n• Las almohadas de embarazo en forma de C o U son muy útiles en el tercer trimestre\n• Si te despiertas boca arriba, no te preocupes — tu cuerpo habrá ajustado la circulación. Simplemente gírate.\n\n**Para el insomnio:**\n• Rutina de sueño regular\n• Evita pantallas 1h antes de dormir\n• Temperatura fresca en la habitación\n• Si el bebé te despierta con patadas, es completamente normal`,
+   source:'GPC Ministerio de Sanidad · INGESA'},
+
+  // ── MOVIMIENTOS BEBÉ ──
+  {tags:['movimientos','patadas','contar','bebé no se mueve','se mueve poco','pataditas','semana 20'],
+   q:'¿Cuándo empiezo a sentir los movimientos del bebé?',
+   a:`Los movimientos fetales son uno de los signos más importantes del bienestar del bebé.\n\n**¿Cuándo los sientes?**\n• En primigestas (primer embarazo): generalmente entre las **semanas 18–22**\n• Al principio parecen "burbujas" o "aleteos" en el abdomen\n• A partir de la semana 24–28 son más claros y regulares\n• En el 3er trimestre pueden ser muy intensos y visibles desde fuera\n\n**¿Cuántos movimientos son normales?**\nNo existe un número exacto establecido. Lo importante es conocer **el patrón de tu bebé** — cada bebé tiene su ritmo. Suelen tener períodos de actividad y períodos de descanso de hasta 40 minutos.\n\n**Cuándo preocuparse:**\nSi notas una **reducción significativa** de los movimientos habituales durante más de 2 horas en el tercer trimestre, especialmente si el bebé no responde a estímulos (bebida fría, cambio de postura, algo dulce), llama a tu hospital.\n\nNunca uses monitores fetales caseros como tranquilizante — si tienes dudas, ve al hospital. Es lo correcto.`,
+   source:'GPC Ministerio de Sanidad · SEGO'},
+
+  // ── ESTREPTOCOCO B ──
+  {tags:['estreptococo','SGB','grupo B','exudado','cultivo','vaginal','semana 35','semana 37'],
+   q:'¿Qué es el estreptococo del grupo B y por qué me hacen la prueba?',
+   a:`El **Estreptococo del Grupo B (SGB)** es una bacteria que puede colonizar la vagina y el recto de hasta el 20–30% de las mujeres sin causar ningún síntoma ni enfermedad en ellas.\n\nSin embargo, durante el parto puede transmitirse al bebé y causar infecciones graves en el recién nacido (sepsis neonatal, meningitis). Por eso, el protocolo del SNS incluye su detección.\n\n**¿Cómo se detecta?**\nMediante un **exudado vagino-rectal** (cultivo) que se realiza entre las **semanas 35–37** de gestación.\n\n**¿Qué pasa si el resultado es positivo?**\nNo necesitas tratamiento durante el embarazo. Cuando empiece el parto o rompas aguas, recibirás **antibiótico intravenoso** (generalmente penicilina) durante el parto para proteger al bebé. Es un procedimiento seguro y efectivo.\n\n**¿Qué pasa si no llego a hacerme la prueba?**\nSi el parto comienza antes de realizarla o el resultado no está disponible, se evaluarán otros factores de riesgo para decidir si se administra antibiótico preventivo.`,
+   source:'GPC Ministerio de Sanidad · SEGO'},
+
+  // ── HINCHAZÓN PIES ──
+  {tags:['hinchazón','pies','tobillos','edema','piernas','retención','líquido'],
+   q:'Tengo los pies y tobillos hinchados, ¿es normal?',
+   a:`La hinchazón (edema) de pies, tobillos y piernas es muy frecuente, especialmente a partir del segundo trimestre. Se estima que afecta a más del 50% de las embarazadas y es normal en la mayoría de los casos.\n\n**Por qué ocurre:** El útero presiona las venas pélvicas dificultando el retorno venoso, y las hormonas aumentan la retención de líquidos.\n\n**Medidas que ayudan (según la Guía INGESA):**\n• Eleva las piernas por encima del nivel del corazón cuando reposes\n• Camina con regularidad — el movimiento activa la bomba venosa\n• Evita estar mucho tiempo de pie o sentada sin moverte\n• Evita el calor excesivo\n• Medias de compresión graduada (consulta con tu matrona el nivel adecuado)\n• Bebe suficiente agua (retener líquido no significa beber menos)\n• Reduce el consumo de sal\n\n⚠️ **Consulta a tu médico si:**\n• La hinchazón aparece de forma repentina y es importante\n• Afecta también a las manos y la cara\n• Va acompañada de dolor de cabeza, visión borrosa o tensión alta → pueden ser señales de preeclampsia`,
+   source:'INGESA Guía de Cuidados · GPC Ministerio de Sanidad'},
+
+  // ── ACIDEZ ──
+  {tags:['acidez','ardor','reflujo','pirosis','estómago','quemazón'],
+   q:'Tengo mucha acidez y ardor de estómago, ¿qué puedo hacer?',
+   a:`La acidez (pirosis) es uno de los síntomas más molestos del embarazo, especialmente en el segundo y tercer trimestre. La causa es doble: la progesterona relaja el esfínter esofágico inferior, y el útero creciente comprime el estómago.\n\n**Medidas no farmacológicas (GPC Ministerio de Sanidad):**\n• Haz comidas pequeñas y frecuentes (5–6 al día) en lugar de pocas abundantes\n• Come despacio y mastica bien\n• Evita tumbarte inmediatamente después de comer (espera al menos 2 horas)\n• Eleva la cabecera de la cama unos 15–20 cm\n• Evita alimentos que empeoran la acidez: café, chocolate, cítricos, tomate, fritos, picante\n• Evita ropa ajustada en la cintura\n• Duerme sobre el lado izquierdo\n\n**¿Puedo tomar algo?**\nLos antiácidos con alginato (tipo Gaviscon) o hidróxido de magnesio/aluminio se consideran seguros. El omeprazol puede recetarlo tu médico si los síntomas son intensos. **No tomes ningún medicamento sin consultarlo antes con tu matrona o médico.**`,
+   source:'GPC Ministerio de Sanidad · INGESA'},
+
+  // ── DOLOR DE ESPALDA ──
+  {tags:['dolor espalda','lumbar','ciática','pelvis','dolor','espalda'],
+   q:'Me duele mucho la espalda, ¿qué puedo hacer?',
+   a:`El dolor lumbar afecta al 50–70% de las embarazadas y suele aparecer a partir del segundo trimestre. El aumento de peso, el cambio del centro de gravedad y la acción de la hormona relaxina (que relaja los ligamentos) son las causas principales.\n\n**Consejos de la Guía de Cuidados del SNS:**\n• Mantén buena postura: evita hiperlordosis (sacar demasiado el vientre hacia delante)\n• Al levantarte, hazlo de lado, apoyándote con los brazos\n• Evita estar mucho tiempo de pie o sentada en la misma posición\n• Usa zapatos cómodos de tacón bajo (no completamente plano)\n• Duerme con una almohada entre las rodillas\n• El calor local (almohadilla térmica a temperatura suave) puede aliviar\n• El yoga prenatal y la natación son especialmente beneficiosos\n• Considera la fisioterapia prenatal — muy efectiva\n\n**El cinturón pélvico prenatal** puede ayudar con el dolor en la sínfisis del pubis o la cintura pelviana.\n\n⚠️ Consulta si el dolor es muy intenso, irradia hacia la pierna (posible ciática), o va acompañado de otros síntomas.`,
+   source:'INGESA Guía de Cuidados · GPC Ministerio de Sanidad'},
+
+  // ── DIETA LISTERIA ──
+  {tags:['listeria','toxoplasmosis','salmonela','alimentos','seguridad alimentaria','qué comer','prohibido'],
+   q:'¿Qué alimentos debo evitar para prevenir infecciones?',
+   a:`Durante el embarazo el sistema inmune está más suprimido, lo que aumenta el riesgo de ciertas infecciones alimentarias que pueden afectar al bebé. Estas son las recomendaciones del Ministerio de Sanidad:\n\n**❌ Alimentos a evitar completamente:**\n• Carnes crudas o poco hechas (incluido el jamón ibérico, carpaccio, steak tartar)\n• Pescados y mariscos crudos (sushi, sashimi, ostras, almejas)\n• Quesos de pasta blanda con corteza enmohecida (brie, camembert, roquefort) y quesos frescos no pasteurizados\n• Patés refrigerados\n• Brotes crudos (germinados)\n• Leche no pasteurizada\n• Huevo crudo o poco cocinado (mayonesa casera, tiramisú casero)\n• Pescados con alto contenido en mercurio: pez espada, tiburón, atún rojo en exceso, lucio\n\n**☕ Limitar:**\n• Cafeína: máximo 200 mg/día (aprox. 1–2 cafés solos)\n• Atún en lata: máximo 4 latas medianas por semana\n\n**✅ Puedes comer con seguridad:**\n• Jamón cocido (york) — solo el curado crudo está desaconsejado si no es de calidad controlada\n• Pescado azul pequeño (sardina, caballa, boquerón) — rico en omega-3 y bajo en mercurio\n• Todos los alimentos bien cocinados`,
+   source:'Ministerio de Sanidad · AESAN (Agencia Española de Seguridad Alimentaria)'},
+
+  // ── CALAMBRES ──
+  {tags:['calambres','piernas','noche','espasmos','hormigueo'],
+   q:'Tengo calambres en las piernas por las noches, ¿por qué?',
+   a:`Los calambres nocturnos en las piernas son muy frecuentes, sobre todo en el segundo y tercer trimestre. Aunque la causa exacta no está del todo clara, se relacionan con el aumento de peso, la compresión de los vasos sanguíneos por el útero, el déficit de magnesio y calcio, y el cansancio muscular.\n\n**En el momento del calambre:**\n• Estira el músculo: flexiona el pie hacia arriba (punta hacia la rodilla) y mantén\n• Masajea la zona con firmeza\n• Aplica calor local si persiste el dolor después\n\n**Para prevenirlos:**\n• Estira las pantorrillas antes de dormir (de pie, apoya las manos en la pared y empuja el talón al suelo)\n• Camina durante el día para activar la circulación\n• Mantén las piernas elevadas cuando reposes\n• Asegúrate de tomar suficiente calcio (lácteos, sardinas con espina, almendras)\n• El magnesio puede ayudar — consulta con tu matrona si sería adecuado en tu caso\n\nSon molestos pero no peligrosos. Si son muy frecuentes e incapacitantes, coméntalo en tu próxima visita.`,
+   source:'INGESA Guía de Cuidados'},
+
+  // ── ESTRÍAS ──
+  {tags:['estrías','piel','abdomen','crema','prevenir','marcas'],
+   q:'¿Puedo prevenir las estrías del embarazo?',
+   a:`Las estrías son el resultado de la rotura de fibras elásticas de la piel por la distensión rápida. Tienen un componente **genético importante** — si tu madre tuvo estrías, hay más probabilidad de que tú también las tengas.\n\nDicho esto, hay medidas que pueden ayudar a reducirlas o minimizarlas:\n\n**Desde el primer trimestre (no esperes a que aparezcan):**\n• Aplica crema hidratante o aceite (rosa mosqueta, almendras dulces, manteca de karité) en abdomen, pechos, caderas y muslos\n• Masajea con movimientos circulares para activar la circulación\n• Hidrátate bien desde dentro: bebe suficiente agua\n• Evita la ganancia de peso demasiado rápida\n\n**No existe ningún producto con evidencia científica sólida** que garantice la prevención total. Pero mantener la piel hidratada y elástica puede reducir su severidad.\n\nSi ya tienes estrías, recuerda que van aclarándose con el tiempo. Son una señal de lo increíble que ha hecho tu cuerpo.`,
+   source:'GPC Ministerio de Sanidad'},
+
+  // ── SUELO PÉLVICO ──
+  {tags:['suelo pélvico','kegel','pérdidas de orina','incontinencia','ejercicios'],
+   q:'¿Por qué debo cuidar el suelo pélvico durante el embarazo?',
+   a:`El suelo pélvico es el conjunto de músculos que sostienen la vejiga, el útero y el recto. El embarazo y el parto son los principales factores de riesgo de debilitamiento del suelo pélvico, lo que puede provocar incontinencia urinaria, prolapsos y disfunción sexual.\n\n**Los ejercicios de Kegel** son la intervención con mejor evidencia para prevenir estos problemas y deben empezarse desde el primer trimestre:\n\n**Cómo hacerlos:**\n1. Identifica los músculos del suelo pélvico: son los que usas para interrumpir el chorro de orina (solo como referencia, no lo hagas habitualmente orinando)\n2. Contrae esos músculos durante 5–10 segundos\n3. Relaja durante 5–10 segundos\n4. Repite 10–15 veces, 3 series al día\n\n**Progresión:** Aumenta la duración de la contracción gradualmente hasta 10 segundos.\n\n**Fisioterapia de suelo pélvico:** Muy recomendable y en muchas Comunidades Autónomas está disponible en el sistema público. Pregunta a tu matrona.`,
+   source:'GPC Ministerio de Sanidad · SEGO'},
+
+  // ── VACUNAS ──
+  {tags:['vacunas','vacuna','gripe','tos ferina','covid','inmunización'],
+   q:'¿Qué vacunas puedo o debo ponerme durante el embarazo?',
+   a:`Las vacunas son una parte importante del cuidado prenatal. Según el **calendario vacunal del SNS** para embarazadas:\n\n**✅ Recomendadas durante el embarazo:**\n• **Gripe (influenza):** Recomendada en cualquier trimestre, especialmente en temporada de gripe. Protege a la madre y al bebé las primeras semanas de vida.\n• **Tos ferina (dTpa):** Se recomienda en cada embarazo entre las **semanas 27–36**, preferiblemente en la semana 28. Protege al recién nacido, que aún no puede vacunarse.\n• **COVID-19:** Recomendada durante el embarazo según el protocolo vigente.\n\n**❌ Contraindicadas durante el embarazo:**\n• Todas las vacunas de virus vivos atenuados: triple vírica (sarampión, rubéola, parotiditis), varicela, fiebre amarilla.\n\n**Para el entorno del bebé (estrategia capullo):**\nEs muy recomendable que la pareja, abuelos y personas que vayan a tener contacto estrecho con el bebé se vacunen de la tos ferina.\n\nConsulta siempre con tu matrona para adaptar el calendario a tu situación personal.`,
+   source:'Ministerio de Sanidad · Programa de Vacunación SNS'},
+
+  // ── PLAN DE PARTO ──
+  {tags:['plan de parto','mis preferencias','decisiones parto','derechos','parto respetado'],
+   q:'¿Qué es el plan de parto y cómo lo hago?',
+   a:`El **plan de parto** es un documento escrito en el que expresas tus preferencias y deseos para el trabajo de parto, el parto y el postparto inmediato. Está reconocido por la **Estrategia de Atención al Parto Normal del Ministerio de Sanidad**.\n\n**¿Para qué sirve?**\nPara que el equipo sanitario conozca tus preferencias y las respete en la medida en que sea posible desde el punto de vista clínico. No es un contrato, pero sí una comunicación importante.\n\n**¿Qué puedes incluir?**\n• Quién quieres como acompañante\n• Si deseas analgesia epidural o prefieres parto sin medicación\n• Preferencias de posición durante la dilatación y el expulsivo\n• Si deseas libertad de movimiento y movilidad\n• Preferencias sobre la episiotomía (si es posible, evitarla)\n• Si deseas pinzamiento tardío del cordón\n• Quién corta el cordón\n• Contacto piel con piel inmediato\n• Si deseas lactancia materna desde el primer momento\n• Preferencias en caso de cesárea urgente\n• Donación de sangre del cordón umbilical\n\n**¿Cuándo entregarlo?** Llévalo a la visita de las semanas 35–37 y luego en la bolsa del hospital. Haz 3 copias.\n\nPuedes usar el modelo oficial del Ministerio de Sanidad o crear el tuyo propio.`,
+   source:'Estrategia de Atención al Parto Normal · Ministerio de Sanidad'},
+
+  // ── DEPRESIÓN POSTPARTO ──
+  {tags:['depresión postparto','baby blues','llorar','tristeza','posparto','ansiedad postparto','emoción'],
+   q:'¿Qué es el baby blues y la depresión postparto?',
+   a:`Son dos cosas diferentes que a veces se confunden:\n\n**Baby blues (o tristeza postparto):**\n• Afecta al 50–80% de las madres\n• Aparece entre el 2.º y 5.º día tras el parto (coincide con la bajada de leche y el bajón hormonal)\n• Se caracteriza por llanto fácil, irritabilidad, sensación de agobio\n• **Es completamente normal y temporal** — suele resolverse sola en 1–2 semanas\n• No requiere tratamiento, sí apoyo y descanso\n\n**Depresión postparto:**\n• Afecta al 10–15% de las madres\n• Síntomas más intensos y persistentes: tristeza profunda, ansiedad, dificultad para vincularse con el bebé, sentimientos de culpa o de ser mala madre, pensamientos negativos\n• **No es un fracaso ni una debilidad** — es una enfermedad tratable\n• Si los síntomas persisten más de 2 semanas o son muy intensos, es fundamental hablar con tu médico o matrona\n• Tiene tratamiento efectivo: psicoterapia, apoyo social y en algunos casos medicación compatible con la lactancia\n\n**Busca ayuda sin dudar.** La matrona de Atención Primaria hace visita domiciliaria en el postparto y es el primer recurso.`,
+   source:'GPC Ministerio de Sanidad · OMS'},
+
+  // ── ESTREÑIMIENTO ──
+  {tags:['estreñimiento','ir al baño','digestión','heces','laxante'],
+   q:'Tengo estreñimiento, ¿qué puedo hacer?',
+   a:`El estreñimiento es muy frecuente durante el embarazo. La progesterona relaja el músculo liso intestinal (ralentizando el tránsito), el útero comprime el intestino y el hierro suplementario puede empeorarlo.\n\n**Medidas dietéticas (primera línea):**\n• Aumenta la fibra: frutas (especialmente ciruelas, kiwi, pera), verduras, legumbres, pan integral\n• Bebe al menos 8–10 vasos de agua al día\n• El kiwi en ayunas o un vaso de zumo de ciruela pueden ser muy efectivos\n• Come con regularidad y no te saltes comidas\n\n**Actividad física:**\nCaminar 30 minutos al día estimula el tránsito intestinal de forma natural.\n\n**Si las medidas dietéticas no son suficientes:**\nEl **lactulosa** (un laxante osmótico) es seguro durante el embarazo y puede recetarlo tu matrona o médico. **No tomes laxantes estimulantes sin consultar.**\n\n⚠️ Si el estreñimiento va acompañado de dolor abdominal intenso o sangrado rectal, consúltalo con tu médico.`,
+   source:'GPC Ministerio de Sanidad · INGESA'},
+
+  // ── CONTRACCIONES BRAXTON HICKS ──
+  {tags:['contracciones','braxton hicks','falsas','preparto','tensión útero','parto prematuro'],
+   q:'Tengo contracciones pero no estoy de parto, ¿qué son?',
+   a:`Las **contracciones de Braxton Hicks** son contracciones uterinas de práctica, normales y muy frecuentes a partir del segundo trimestre (aunque algunas mujeres las sienten antes).\n\n**Características:**\n• Irregulares — no siguen un patrón rítmico\n• Duran entre 20 y 60 segundos\n• No aumentan en frecuencia ni intensidad con el tiempo\n• Suelen ser indoloras o ligeramente molestas (como una tensión en el abdomen)\n• Mejoran cambiando de postura, hidratándose o descansando\n\n**¿Cómo diferenciarlas de las contracciones reales de parto?**\n\n| | Braxton Hicks | Parto real |\n|---|---|---|\n| Regularidad | Irregulares | Regulares y rítmicas |\n| Progresión | No aumentan | Cada vez más frecuentes e intensas |\n| Cambio con reposo | Ceden | Continúan |\n| Dolor | Leve tensión | Dolor que va en aumento |\n\n**⚠️ Consulta si:**\n• Aparecen antes de la semana 37 con regularidad (cada 10 min o menos)\n• Son dolorosas y regulares\n• Van acompañadas de pérdidas de líquido o sangrado`,
+   source:'GPC Ministerio de Sanidad · SEGO'},
+];
+
+// ── MOTOR DE BÚSQUEDA ──
+function searchKB(query) {
+  if (!query || query.trim().length < 2) return null;
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let best = null, bestScore = 0;
+
+  for (const entry of KB) {
+    let score = 0;
+    // Check tags
+    for (const tag of entry.tags) {
+      const t = tag.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (q.includes(t)) score += 3;
+      else if (t.split(' ').some(word => word.length > 3 && q.includes(word))) score += 1;
+    }
+    // Check question words
+    const qWords = entry.q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/\s+/);
+    for (const word of qWords) {
+      if (word.length > 4 && q.includes(word)) score += 1;
+    }
+    if (score > bestScore) { bestScore = score; best = entry; }
+  }
+  return bestScore >= 1 ? best : null;
+}
+
+function formatAnswer(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n• /g, '<br>• ')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
+function sendMsg() {
+  const ta = document.getElementById('chat-ta');
+  const text = ta.value.trim();
+  if (!text) return;
+  ta.value = '';
+  appendMsg(text, true);
+
+  setTimeout(() => {
+    const result = searchKB(text);
+    if (result) {
+      const html = `<strong>${result.q}</strong><br><br>${formatAnswer(result.a)}<br><br><span style="font-size:.73rem;color:var(--light);display:block;margin-top:.5rem;border-top:1px solid rgba(0,0,0,.06);padding-top:.4rem">📚 Fuente: ${result.source}</span>`;
+      appendMsgHTML(html, false);
+    } else {
+      appendMsg(`No tengo información específica sobre eso en mi base de conocimiento. Para esta duda, te recomiendo:\n\n• Consultar a tu matrona o ginecólogo\n• Llamar al SITE del Ministerio de Sanidad: 91 822 24 36\n• Visitar la guía oficial: sanidad.gob.es`, false);
+    }
+  }, 400);
+}
+
+function sendQ(t) { document.getElementById('chat-ta').value = t; sendMsg(); }
+function chatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } }
+
+function sanitize(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function appendMsg(text, isUser) {
+  const c = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg' + (isUser ? ' u' : '');
+  const safe = isUser ? sanitize(text) : text.replace(/\n/g,'<br>');
+  d.innerHTML = `<div class="msg-ico">${isUser ? '👤' : '🌿'}</div><div class="msg-bubble">${safe}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+function appendMsgHTML(html, isUser) {
+  const c = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg' + (isUser ? ' u' : '');
+  d.innerHTML = `<div class="msg-ico">${isUser ? '👤' : '🌿'}</div><div class="msg-bubble">${html}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+// ════════════════════════════════════
+// TOAST
+// ════════════════════════════════════
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ════════════════════════════════════
+// TESTIMONIOS
+// ════════════════════════════════════
+const CATEGORIAS = [
+  {id:'all', label:'Todas'},
+  {id:'primer-trimestre', label:'1er trimestre', color:'#7B9E82', bg:'rgba(123,158,130,.12)'},
+  {id:'parto-natural', label:'Parto natural', color:'#4A7252', bg:'rgba(74,114,82,.1)'},
+  {id:'epidural', label:'Con epidural', color:'#6B8FAA', bg:'rgba(107,143,170,.12)'},
+  {id:'cesarea', label:'Cesárea', color:'#8B6B5A', bg:'rgba(139,107,90,.12)'},
+  {id:'lactancia', label:'Lactancia', color:'#A85E50', bg:'rgba(168,94,80,.1)'},
+  {id:'emocional', label:'Salud emocional', color:'#7A6B8A', bg:'rgba(122,107,138,.1)'},
+  {id:'prematuro', label:'Parto prematuro', color:'#C4845A', bg:'rgba(196,132,90,.1)'},
+  {id:'perdida', label:'Pérdida gestacional', color:'#6B7B8A', bg:'rgba(107,123,138,.1)'},
+  {id:'pareja', label:'Experiencia pareja', color:'#4A7252', bg:'rgba(74,114,82,.1)'},
+];
+
+const TESTIMONIOS = [
+  // ── PRIMER TRIMESTRE ──
+  {
+    id:1, cat:'primer-trimestre',
+    nombre:'Laura', edad:29, semana:'Semana 7',
+    avatar:'🌸', avatarBg:'rgba(212,137,122,.15)',
+    resumen:'No me reconocía. No entendía que algo tan natural pudiera hacerme sentir tan enferma.',
+    historia:[
+      'Siempre había pensado que el embarazo sería ese período luminoso que muestran en las películas. Con el vientre redondo, radiante, sonriendo mientras te tocas el abdomen. Nadie me contó la otra versión.',
+      'La semana 6 fue un muro. Me levantaba de la cama y ya tenía náuseas. Me lavaba los dientes y vomitaba. El olor del café, que antes adoraba, me producía arcadas desde el otro extremo de la casa. Mi marido aprendió a salir a desayunar fuera.',
+      'Trabajaba de cara al público y había días en que tenía que pedir un descanso urgente para ir al baño a vomitar. Volvía, me lavaba la cara, sonreía. Nadie lo sabía aún. Fue agotador mantener ese secreto mientras sentía que mi cuerpo me traicionaba.',
+      'Lo que más me ayudó fue hablar con mi matrona sin filtros. Ella me dijo algo que cambió mi perspectiva: "Las náuseas intensas son señal de que la placenta se está formando bien y los niveles hormonales son fuertes. Tu cuerpo está haciendo exactamente lo que tiene que hacer." No desaparecieron, pero las viví diferente.',
+      'En la semana 13 empezaron a ceder. La semana 15 me tomé un café — el primero desde hacía dos meses. Lloré. De alivio y de emoción a la vez.',
+    ],
+    takeaway:'Las náuseas del primer trimestre, aunque incapacitantes, son una señal de embarazo sano para la mayoría de las mujeres. Si no puedes retener líquidos, consulta a tu matrona — hay tratamiento.'
+  },
+  {
+    id:2, cat:'primer-trimestre',
+    nombre:'Sofía', edad:32, semana:'Semana 9',
+    avatar:'🌿', avatarBg:'rgba(123,158,130,.15)',
+    resumen:'El miedo al aborto en el primer trimestre es real. Nadie habla de eso y es devastador vivirlo sola.',
+    historia:[
+      'Me quedé embarazada a la primera, lo que en teoría era una suerte. Pero desde el test positivo hasta la primera ecografía viví en un estado de terror constante que no podía compartir con casi nadie porque "todavía no se lo habíamos dicho a nadie".',
+      'Cada vez que iba al baño miraba el papel. Cualquier pequeño calambre me ponía en alerta máxima. Me aferré a los foros de internet a las 3 de la madrugada buscando historias de mujeres que hubieran tenido los mismos síntomas que yo.',
+      'Lo que no sabía es que el miedo al aborto en el primer trimestre es casi universal entre las primigestas. El 15–20% de los embarazos conocidos terminan en aborto, y todas lo sabemos, y eso pesa.',
+      'Mi ginecóloga me recomendó algo que cambió esas semanas: parar de buscar síntomas en internet y hablar con mi matrona cuando tuviera miedo. "Para eso estoy", me dijo ella. Y cumplió. Me atendió el teléfono tres veces antes de la primera ecografía.',
+      'Cuando vi el latido en la pantalla de la semana 12, el técnico me dijo "todo perfecto". Me permití, por primera vez, creerme que esto iba en serio.',
+    ],
+    takeaway:'La ansiedad en el primer trimestre es muy frecuente y completamente normal. Tu matrona de Atención Primaria es tu primera línea de apoyo — no dudes en llamarla.'
+  },
+  {
+    id:3, cat:'primer-trimestre',
+    nombre:'Carmen', edad:27, semana:'Semana 8',
+    avatar:'🍃', avatarBg:'rgba(74,114,82,.12)',
+    resumen:'Nadie me había dicho que el cansancio del primer trimestre podía ser tan brutal que no podías ni ducharte.',
+    historia:[
+      'Tengo 27 años, hago deporte cinco veces a la semana y nunca he tenido problemas de energía. En la semana 6 de embarazo llegaba a casa del trabajo, me tumbaba en el sofá y no me podía levantar. No exagero: algunos días la ducha era demasiado esfuerzo.',
+      'Me sentía culpable. Pensaba que algo iba mal, que yo era débil, que otras mujeres lo llevaban mejor. Mi pareja me miraba con preocupación y yo intentaba disimular sintiéndome un fraude.',
+      'En la primera visita con la matrona, cuando le describí el cansancio, se rio con cariño y me dijo: "Bienvenida. Tu cuerpo está construyendo la placenta de la nada. Es literalmente el esfuerzo físico más grande que ha hecho en toda tu vida." Eso me cambió todo.',
+      'Pedí el teletrabajo tres días a la semana. Dormí la siesta sin culpa. Dejé el deporte y cambié por paseos cortos. Y en la semana 14, como por arte de magia, volví a sentirme yo.',
+    ],
+    takeaway:'El agotamiento extremo del primer trimestre es fisiológico y no refleja tu condición física previa. Descansar no es rendirse — es lo que tu cuerpo necesita.'
+  },
+
+  // ── PARTO NATURAL ──
+  {
+    id:4, cat:'parto-natural',
+    nombre:'Ana', edad:31, semana:'Semana 40+2',
+    avatar:'🌺', avatarBg:'rgba(212,137,122,.15)',
+    resumen:'Quería un parto sin epidural. Me preparé durante meses. Y lo conseguí, pero no fue como esperaba.',
+    historia:[
+      'Llevaba meses haciendo yoga prenatal, cursos de hipnobirthing, leyendo todo lo que caía en mis manos sobre el parto fisiológico. Tenía muy claro que quería vivir el parto sin medicación. Era importante para mí.',
+      'Las contracciones empezaron a las 3 de la madrugada. Las primeras horas las llevé bien, respirando, moviéndome. Mi pareja me masajeaba la zona lumbar en cada contracción. El equipo del hospital respetó mi plan de parto desde el primer momento — fue fundamental.',
+      'Cuando llegué a 7 centímetros dudé. Pensé: "No puedo más." Le dije a la matrona que lo estaba reconsiderando. Ella me miró a los ojos y me dijo: "Estás al 80% del camino. Tú decides, y cualquier decisión es válida. Pero si quieres, podemos ir una contracción a la vez." Decidí seguir.',
+      'El expulsivo fue lo más intenso que he vivido. Y cuando pusieron a mi hija sobre mi pecho, no sentí que había ganado nada — sentí que habíamos llegado juntas.',
+      'Lo que no había leído en ningún sitio: el parto duele de una manera que no tiene nombre. No es un dolor que puedas anticipar. Pero el cuerpo tiene recursos que descubres cuando los necesitas.',
+    ],
+    takeaway:'Un parto sin epidural es posible con preparación, apoyo continuo y un equipo que respete tu plan. La flexibilidad para cambiar de opinión siempre es tu derecho.'
+  },
+  {
+    id:5, cat:'parto-natural',
+    nombre:'Marta', edad:35, semana:'Semana 39',
+    avatar:'🌱', avatarBg:'rgba(123,158,130,.15)',
+    resumen:'Empecé sin epidural y terminé pidiéndola. Y fue la mejor decisión que tomé.',
+    historia:[
+      'Mi plan de parto decía "prefiero parto sin epidural pero acepto si lo necesito". Esa frase la escribí casi como disculpa. No quería parecer débil.',
+      'Estuve 11 horas de parto. Las primeras 7 sin medicación, moviéndome, con el agua caliente de la ducha en la espalda, con mi pareja pegado a mí. Era duro pero manejable.',
+      'En la hora 8 algo cambió. El dolor dejó de ser "intenso" y se convirtió en algo que no me dejaba respirar entre contracciones. Pedí la epidural. Y sentí una punzada de culpa inmediata, como si estuviera fallando.',
+      'La matrona lo notó. Me dijo algo que llevo tatuado: "Pedir ayuda cuando la necesitas no es rendirse. Es ser valiente." La epidural tardó 20 minutos en hacer efecto. Pude descansar dos horas. Empujé con energía. Mi hijo nació sano.',
+      'No existe un parto "de verdad" y uno "trampa". Existe el parto que fue el tuyo, con las decisiones que tomaste en ese momento con lo que tenías.',
+    ],
+    takeaway:'Cambiar de decisión durante el parto no es un fracaso. El parto respetado es aquel donde tus decisiones son escuchadas en cada momento, incluido el de pedir la epidural.'
+  },
+
+  // ── EPIDURAL ──
+  {
+    id:6, cat:'epidural',
+    nombre:'Elena', edad:28, semana:'Semana 40',
+    avatar:'💙', avatarBg:'rgba(107,143,170,.15)',
+    resumen:'Tenía miedo a la aguja de la epidural. Era mi mayor terror. Te cuento cómo fue realmente.',
+    historia:[
+      'Soy de las que se desmayan en los análisis de sangre. La idea de una aguja en la columna me aterrorizaba más que el parto en sí. Estuve meses angustiada solo con pensarlo.',
+      'Cuando llegué al hospital con 5 centímetros de dilatación pedí la epidural directamente. La anestesista fue increíble — me explicó cada paso antes de hacerlo. "Ahora vas a notar frío, ahora un poco de presión, ya está."',
+      'Lo que sentí fue: una contracción que tuve que aguantar quieta mientras me la ponían, algo de presión en la espalda, y... ya. Eso fue todo. En 15 minutos el dolor había bajado de un 10 a un 2.',
+      'Dormí dos horas. Mi pareja también. Cuando llegó el momento de empujar estaba descansada, centrada, presente. Sentí la presión de cada contracción aunque no el dolor.',
+      'A las personas que tienen miedo a la aguja les digo: la aguja dura 3 minutos. El alivio que da dura horas. No dejéis que el miedo a ese momento os prive de algo que puede cambiar vuestra experiencia de parto.',
+    ],
+    takeaway:'La epidural es segura, efectiva y está disponible en todos los hospitales públicos. El procedimiento es breve — la anestesista os guiará en cada paso.'
+  },
+
+  // ── CESÁREA ──
+  {
+    id:7, cat:'cesarea',
+    nombre:'Isabel', edad:33, semana:'Semana 38+4',
+    avatar:'⭐', avatarBg:'rgba(139,107,90,.12)',
+    resumen:'Mi cesárea fue urgente. No estaba en ningún plan. Esto es lo que nadie te enseña a preparar.',
+    historia:[
+      'Tenía todo preparado para un parto vaginal. Clases de preparación, plan de parto detallado, la bolsa con la playlist seleccionada. La cesárea urgente no estaba en el guión.',
+      'Tras 14 horas de parto, el monitor mostró que el bebé no toleraba bien las contracciones. En menos de 10 minutos me habían trasladado al quirófano. Recuerdo la velocidad, las luces de los pasillos, apretar la mano de mi pareja.',
+      'En el quirófano todo fue muy profesional y, curiosamente, menos aterrador de lo que imaginaba. La anestesista me habló todo el tiempo. Sentí presión pero no dolor. Mi marido estaba a mi lado. Cuando escuché el llanto de mi hijo me deshice.',
+      'La recuperación de la cesárea fue más dura de lo que esperaba. Los primeros días levantarme era muy doloroso. Nadie me había explicado bien que necesitaría ayuda para todo — incluido para incorporarme a dar el pecho.',
+      'Tardé tiempo en procesar que el parto no fue "como quería". Pero lo que sí fue es que mi hijo llegó sano, y que el equipo tomó la decisión correcta en el momento correcto.',
+    ],
+    takeaway:'Una cesárea urgente puede llegar sin avisar. Infórmate sobre la recuperación durante el embarazo para no pillarla por sorpresa. Pide apoyo para el postparto inmediato — lo vas a necesitar.'
+  },
+  {
+    id:8, cat:'cesarea',
+    nombre:'Patricia', edad:36, semana:'Semana 39',
+    avatar:'🌙', avatarBg:'rgba(107,123,138,.12)',
+    resumen:'Mi cesárea fue programada. Y tuve que aprender a no sentirme culpable por ello.',
+    historia:[
+      'Por posición fetal y otros factores médicos, mi ginecóloga recomendó una cesárea programada. Mi reacción inicial fue de decepción. Había algo en mí que sentía que "no había parido de verdad".',
+      'Esos pensamientos son más comunes de lo que crees, y también son completamente injustos con una misma. Los exploré en terapia durante el embarazo y llegué a la cesárea en paz.',
+      'La experiencia fue muy diferente a lo que imaginaba. Entré andando al quirófano. La anestesia espinal me dejó despierta y consciente de todo. Pusieron una pantalla pero pedí que me la bajaran para ver el momento. Vi a mi hija salir. Fue precioso.',
+      'La recuperación fue su proceso — cicatriz, movilidad limitada las primeras semanas, el dolor al toser o reír. Pero con ayuda en casa y paciencia, a las 4 semanas me movía con normalidad.',
+      'Mi hija nació sana. Yo estoy bien. El método de llegada no define nada de lo que somos como madres.',
+    ],
+    takeaway:'La cesárea programada es una opción médica válida, no un atajo ni un fracaso. El vínculo con tu bebé no depende de cómo llegó al mundo.'
+  },
+
+  // ── LACTANCIA ──
+  {
+    id:9, cat:'lactancia',
+    nombre:'Rocío', edad:30, semana:'Semana 2 postparto',
+    avatar:'🤱', avatarBg:'rgba(168,94,80,.12)',
+    resumen:'La lactancia materna casi me rompe. Lo que nadie te dice antes de intentarlo.',
+    historia:[
+      'Me habían dicho que dar el pecho era "lo más natural del mundo". Lo que no me dijeron es que natural no significa fácil, y que las primeras semanas pueden ser devastadoras.',
+      'Desde el primer día tuve grietas en los pezones que sangraban. Cada toma era llorar de dolor. Mi hijo lloraba, yo lloraba, mi pareja no sabía qué hacer. En la semana 3 estaba al límite.',
+      'Lo que me salvó fue una consultora de lactancia. En una sesión de 45 minutos identificó que mi hijo tenía frenillo lingual corto que dificultaba el agarre. Con una pequeña corrección del agarre y el tratamiento del frenillo, todo cambió.',
+      'Nadie me había explicado que el agarre correcto es una habilidad que se aprende — que la boca del bebé tiene que abarcar gran parte de la areola, no solo el pezón. Esa información básica me habría ahorrado semanas de sufrimiento.',
+      'Hoy llevo 8 meses dando el pecho y es una de las experiencias más bonitas de mi vida. Pero llegué aquí porque pedí ayuda. Si no la hubiera pedido, lo habría dejado en la semana 4 sintiéndome un fracaso.',
+    ],
+    takeaway:'Las dificultades con la lactancia son muy frecuentes y tienen solución. Una consultora de lactancia IBCLC puede cambiar completamente tu experiencia. Pide ayuda antes de rendirte.'
+  },
+  {
+    id:10, cat:'lactancia',
+    nombre:'Nuria', edad:34, semana:'Semana 6 postparto',
+    avatar:'🌻', avatarBg:'rgba(196,168,80,.12)',
+    resumen:'Dejé la lactancia materna a las 6 semanas. Y fue la mejor decisión que pude tomar.',
+    historia:[
+      'Intenté dar el pecho con todas mis fuerzas. Lo había planeado durante el embarazo, había leído, me había preparado. Pero en la semana 4 tenía mastitis por segunda vez, producía poca leche y cada toma era una batalla.',
+      'El pediatra me dijo que mi hijo había recuperado bien el peso con los suplementos de fórmula que habíamos tenido que introducir. Que estaba sano. Que crecía.',
+      'Tomé la decisión de pasar a lactancia artificial completa. Tardé dos semanas en hacerlo sin llorar. Sentía que había fallado en lo más básico.',
+      'Lo que me ayudó a salir de ese pozo fue una frase de mi matrona: "Un bebé alimentado es un bebé bien cuidado. La lactancia materna es maravillosa cuando funciona. Cuando no funciona, la fórmula existe para esto."',
+      'Mi hijo tiene 8 meses. Come estupendamente. Me mira con los ojos más brillantes del mundo. Nuestro vínculo no tiene nada que ver con por dónde le llegó la leche.',
+    ],
+    takeaway:'La lactancia artificial es una opción completamente válida y nutritiva. No es un fracaso — es una decisión que puedes tomar sin culpa cuando es lo mejor para ti y tu bebé.'
+  },
+
+  // ── SALUD EMOCIONAL ──
+  {
+    id:11, cat:'emocional',
+    nombre:'Clara', edad:29, semana:'Semana 6 postparto',
+    avatar:'🦋', avatarBg:'rgba(122,107,138,.12)',
+    resumen:'Tuve depresión postparto. Tardé 3 semanas en decírselo a alguien porque creía que era mala madre.',
+    historia:[
+      'Los primeros días después del parto lloraba mucho, pero me dijeron que era el baby blues normal. En la tercera semana, cuando ya debería estar mejorando, me sentía cada vez peor.',
+      'No era tristeza. Era una niebla gris constante. Miraba a mi hijo y en lugar de ese amor arrollador que todos describían, sentía una responsabilidad aplastante y una sensación de que él se merecía una madre mejor.',
+      'Tuve pensamientos de que si yo no estuviera, él estaría mejor cuidado. Eso me aterrorizó tanto que lo escondí durante semanas. No podía ser que la madre del año que había soñado ser pensara esas cosas.',
+      'Se lo conté a mi pareja llorando una noche. Él me llevó al médico al día siguiente. El diagnóstico fue depresión postparto moderada. Empecé terapia y medicación compatible con la lactancia esa misma semana.',
+      'Ahora, con perspectiva, sé que los pensamientos que tenía eran síntomas de una enfermedad, no la verdad sobre quién soy. Me tardó meses recuperarme, pero me recuperé. Y amo a mi hijo con una intensidad que no sabía que era posible.',
+    ],
+    takeaway:'La depresión postparto es una enfermedad, no un fallo moral. Si los síntomas persisten más de dos semanas o tienes pensamientos que te asustan, habla hoy con tu médico o matrona. Tiene tratamiento.'
+  },
+  {
+    id:12, cat:'emocional',
+    nombre:'Beatriz', edad:31, semana:'Semana 22',
+    avatar:'🕊️', avatarBg:'rgba(107,143,170,.12)',
+    resumen:'Tuve ansiedad durante todo el embarazo. Nadie me había dicho que eso también era posible.',
+    historia:[
+      'Siempre había tenido tendencia a la ansiedad, pero bien controlada. El embarazo la disparó de una manera que no esperaba.',
+      'Pasaba horas mirando síntomas en internet. Cada vez que no sentía al bebé moverse durante unas horas entraba en pánico. Antes de cada ecografía pasaba noches sin dormir convencida de que encontrarían algo malo.',
+      'Lo que más me costó fue reconocer que necesitaba ayuda psicológica durante el embarazo — tenía el prejuicio de que eso era "para los casos graves". Mi matrona me derivó a psicología perinatal, que existe en muchos centros de salud.',
+      'La terapia cognitivo-conductual me dio herramientas concretas: cómo interrumpir el ciclo de búsqueda en internet, técnicas de respiración para los momentos de pánico, cómo distinguir una preocupación real de una catastrofización.',
+      'Terminé el embarazo con herramientas que no tenía al principio. Y llegué al parto con miedo, sí, pero con recursos para manejarlo.',
+    ],
+    takeaway:'La ansiedad durante el embarazo es frecuente y tiene tratamiento. La psicología perinatal existe para esto — pregunta a tu matrona si hay servicio en tu centro de salud.'
+  },
+
+  // ── PARTO PREMATURO ──
+  {
+    id:13, cat:'prematuro',
+    nombre:'Lucía', edad:32, semana:'Semana 32',
+    avatar:'⭐', avatarBg:'rgba(196,132,90,.12)',
+    resumen:'Mi hijo nació en la semana 32. Lo que viví en esas semanas de UCI neonatal cambió mi vida.',
+    historia:[
+      'Rompí aguas en la semana 32 sin ningún aviso previo. Ni síntomas, ni señales, nada. En media hora estaba en el hospital y en dos horas mi hijo había nacido por cesárea urgente. Pesó 1,9 kg.',
+      'Las primeras horas no pude procesarlo. Lo vi a través de un cristal conectado a cables y monitores. Tenía el tamaño de mi antebrazo. Me dijeron que estaba bien para su edad gestacional, que sus pulmones habían respondido bien a los corticoides, que era fuerte.',
+      'Las semanas en la UCI neonatal son una montaña rusa que no le deseo a nadie pero que, paradójicamente, me hicieron la madre más presente que he sido. Cada gramo que ganaba era una victoria. Cada día que podía darle el canguro — su piel sobre mi pecho — era sagrado.',
+      'A las 5 semanas vino a casa. Era diminuto pero perfecto. Los pediatras del seguimiento nos guiaron durante el primer año con paciencia infinita.',
+      'Hoy tiene 3 años y es el niño más activo del parque. Nadie diría que llegó antes de tiempo.',
+    ],
+    takeaway:'Si tu bebé nace prematuro, la UCI neonatal tiene profesionales extraordinarios. El canguro (piel con piel) es una de las intervenciones más beneficiosas — pídelo en cuanto te lo permitan.'
+  },
+
+  // ── PÉRDIDA GESTACIONAL ──
+  {
+    id:14, cat:'perdida',
+    nombre:'Sara', edad:30, semana:'Semana 10',
+    avatar:'🕯️', avatarBg:'rgba(107,123,138,.12)',
+    resumen:'Perdí mi primer embarazo en la semana 10. Esto es lo que necesitaba haber escuchado.',
+    historia:[
+      'Llevábamos dos años intentándolo. Cuando vi las dos líneas lloré de alegría. Nos lo dijimos todo muy pronto — a la familia, a los amigos cercanos. No quería guardar ese secreto de felicidad.',
+      'En la semana 10 fui a una revisión rutinaria. El médico fue callando despacio mientras miraba la pantalla. "Lo siento. No hay latido." Cuatro palabras.',
+      'El duelo por un aborto es complicado porque es invisible para mucha gente. Porque no hay entierro ni velatorio. Porque mucha gente dice "al menos fue pronto" o "ya tendrás otro" sin saber el peso de esas palabras.',
+      'Lo que me ayudó: mi ginecóloga me dedicó 40 minutos a explicarme que el 15% de los embarazos conocidos terminan así, que en la mayoría de los casos no hay nada que nadie pudiera haber hecho diferente, que no era mi cuerpo fallando sino la naturaleza siendo brutal.',
+      'Me uní a un grupo de apoyo online para mujeres que habían pasado por pérdidas. Encontrar mujeres que entendían exactamente lo que sentía fue lo más sanador que experimenté.',
+      'Tres ciclos después me quedé embarazada de nuevo. Llegué a cada ecografía con el corazón en la garganta. Pero llegué. Y ahora tengo a mi hija.',
+    ],
+    takeaway:'El duelo por una pérdida gestacional es real y merece ser acompañado. Si necesitas apoyo, pídelo a tu ginecóloga, matrona o busca grupos de apoyo especializados. No estás sola.'
+  },
+
+  // ── PAREJA ──
+  {
+    id:15, cat:'pareja',
+    nombre:'Marcos', edad:33, semana:'Papá primerizo',
+    avatar:'💙', avatarBg:'rgba(74,114,82,.12)',
+    resumen:'Fui al parto sin saber nada de lo que me esperaba. Lo que aprendí y lo que ojalá hubiera sabido antes.',
+    historia:[
+      'Cuando mi mujer se quedó embarazada, yo leí muy poco. Pensé que era cosa suya — ella era la que estaba embarazada. Craso error que reconozco con toda la vergüenza.',
+      'Fui a algunas clases de preparación al parto casi de acompañante social. No tomé notas. No hice preguntas. Llegué al hospital el día del parto completamente impreparado para lo que vi.',
+      'Ver a alguien a quien quieres en ese nivel de dolor y no poder hacer nada más que dar la mano es de las experiencias más duras que he vivido. Me sentía inútil. No sabía cuándo hablar, cuándo callar, si tocar, si alejarme.',
+      'Lo que sí hice bien, casi por instinto: no solté su mano. Nunca. Ni cuando duró 16 horas. Después ella me dijo que eso era lo más importante.',
+      'Si pudiera hablarle al Marcos de hace un año: lee. Ve a todas las clases. Pregunta. Aprende qué es el pujo, qué es la episiotomía, qué pasa si hay cesárea urgente. No para controlarlo todo, sino para no quedarte helado cuando pase.',
+      'Y sobre todo: tu papel no es tener respuestas. Es estar. Presente, calmado, sin miedo visible. Ese es tu trabajo ese día.',
+    ],
+    takeaway:'La preparación del acompañante es igual de importante que la de la madre. Las clases de preparación al parto son para los dos. Un acompañante informado es un apoyo mucho más real.'
+  },
+];
+
+let activeFilter = 'all';
+
+function renderTestimonios(filter='all') {
+  activeFilter = filter;
+  // filters
+  const fc = document.getElementById('test-filters');
+  if(fc) fc.innerHTML = CATEGORIAS.map(c=>`
+    <button class="test-filter ${filter===c.id?'active':''}" onclick="renderTestimonios('${c.id}')">${c.label}</button>
+  `).join('');
+
+  // cards
+  const gc = document.getElementById('test-grid');
+  if(!gc) return;
+  const items = filter==='all' ? TESTIMONIOS : TESTIMONIOS.filter(t=>t.cat===filter);
+  const cat = CATEGORIAS.find(c=>c.id===filter)||{color:'var(--sage)',bg:'rgba(123,158,130,.1)'};
+
+  gc.innerHTML = items.map(t => {
+    const c = CATEGORIAS.find(cc=>cc.id===t.cat)||cat;
+    return `<div class="test-card" onclick="openTestModal(${t.id})">
+      <div class="test-card-top">
+        <div class="test-avatar" style="background:${t.avatarBg}">${t.avatar}</div>
+        <div class="test-meta">
+          <div class="test-name">${t.nombre}, ${t.edad} años</div>
+          <div class="test-info">${t.semana}</div>
+        </div>
+      </div>
+      <span class="test-category" style="color:${c.color};background:${c.bg}">${CATEGORIAS.find(cc=>cc.id===t.cat)?.label||''}</span>
+      <div class="test-quote test-quote-short">${t.resumen}</div>
+      <div class="test-read-more">Leer historia completa →</div>
+    </div>`;
+  }).join('');
+}
+
+function openTestModal(id) {
+  const t = TESTIMONIOS.find(x=>x.id===id);
+  if(!t) return;
+  const c = CATEGORIAS.find(cc=>cc.id===t.cat)||{color:'var(--sage)',bg:'rgba(123,158,130,.1)'};
+  const content = document.getElementById('test-modal-content');
+  content.innerHTML = `
+    <div class="test-modal-header">
+      <div class="test-avatar" style="background:${t.avatarBg};width:52px;height:52px;font-size:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${t.avatar}</div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:600;color:var(--dark)">${t.nombre}, ${t.edad} años</div>
+        <div style="font-size:.8rem;color:var(--light);margin-top:2px">${t.semana}</div>
+        <span class="test-category" style="color:${c.color};background:${c.bg};margin-top:.4rem;display:inline-block">${CATEGORIAS.find(cc=>cc.id===t.cat)?.label||''}</span>
+      </div>
+    </div>
+    <div class="test-modal-body">
+      ${t.historia.map(p=>`<p>${p}</p>`).join('')}
+    </div>
+    <div class="test-takeaway">
+      <strong>💡 Lo que aprendí / Lo que me ayudó:</strong>
+      ${t.takeaway}
+    </div>
+  `;
+  document.getElementById('test-modal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeTestModal() {
+  document.getElementById('test-modal-bg').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  // Bienvenida — solo la primera vez
+  const welcomed = loadLocal('welcomed', false);
+  if (!welcomed) {
+    document.getElementById('welcome-overlay').style.display = 'flex';
+  } else {
+    document.getElementById('welcome-overlay').style.display = 'none';
+  }
+
+  // FAQ
+  renderFAQ();
+
+  // Cargar datos guardados en el dispositivo
+  diaryEntries = loadLocal('diary', []);
+  weightLog = loadLocal('weight', []);
+  const savedWeek = loadLocal('week', 8);
+
+  updateAll(typeof savedWeek === 'number' ? savedWeek : 8);
+  renderAptTimeline();
+  renderChecklists();
+  renderGlosario();
+  renderTestimonios('all');
+  renderDiary();
+  renderWeightLog();
+  updateDiaryDate();
+  const wf=document.getElementById('w-fecha');
+  if(wf)wf.value=new Date().toISOString().split('T')[0];
+});
+</script>
+<!-- ══ FOOTER ══ -->
+<div style="text-align:center;padding:2rem 1rem 1rem;color:var(--light);font-size:.75rem;line-height:1.8;border-top:1px solid var(--cream2);margin-top:2rem">
+  <div style="font-family:var(--font-display);font-size:1rem;color:var(--sage-d);margin-bottom:.4rem">🌿 MamáPrimera</div>
+  <div>Información basada en la <strong>Guía de Práctica Clínica del Ministerio de Sanidad</strong>, <strong>OMS</strong> y <strong>SEGO</strong></div>
+  <div style="margin-top:.25rem">Versión 2026 · Creado por Ayudante Anónimo · Uso personal y gratuito</div>
+  <div style="margin-top:.25rem">Esta app no recoge, almacena ni transmite ningún dato personal · Todo queda en tu dispositivo</div>
+  <div style="margin-top:.5rem;font-size:.7rem;color:var(--cream3)">⚕️ La información de esta app es orientativa y no sustituye la consulta con tu ginecólogo o matrona</div>
+</div>
+
+<script>
+// ══ Service Worker: solo funciona con HTTPS (Vercel/GitHub Pages) ══
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  // El SW se registrará cuando la app esté publicada en un servidor con HTTPS
+  console.log('MamáPrimera: HTTPS detectado, SW disponible cuando se publique con sw.js');
+}
+
+// ══ Una vez instalada, confirmar con toast ══
+window.addEventListener('appinstalled', () => {
+  toast('¡MamáPrimera instalada! Búscala en tu pantalla de inicio 🌿');
+});
+</script>
+</body>
+</html>
